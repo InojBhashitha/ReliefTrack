@@ -63,7 +63,19 @@ public class Graph {
         queue.add(start);
         visited.add(start);
 
-        // Traversal loop to be completed in the next commit
+        while (!queue.isEmpty()) {
+            Vertex current = queue.poll();
+            visitedOrder.add(current);
+
+            List<Edge> edges = adjacencyList.getOrDefault(current, Collections.emptyList());
+            for (Edge edge : edges) {
+                Vertex neighbor = edge.getDestination();
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+        }
         return visitedOrder;
     }
 }
