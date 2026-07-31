@@ -17,4 +17,15 @@ public class Graph {
             adjacencyList.putIfAbsent(vertex, new ArrayList<>());
         }
     }
+
+    public void addEdge(Vertex source, Vertex destination, double weight) {
+        if (source == null || destination == null) {
+            return;
+        }
+        addVertex(source);
+        addVertex(destination);
+        
+        Edge edge = new Edge(source, destination, weight);
+        adjacencyList.get(source).add(edge);
+    }
 }
