@@ -91,6 +91,15 @@ public class Graph {
     }
 
     private void dfsHelper(Vertex current, Set<Vertex> visited, List<Vertex> visitedOrder) {
-        // Recursive traversal logic to be completed in the next commit
+        visited.add(current);
+        visitedOrder.add(current);
+
+        List<Edge> edges = adjacencyList.getOrDefault(current, Collections.emptyList());
+        for (Edge edge : edges) {
+            Vertex neighbor = edge.getDestination();
+            if (!visited.contains(neighbor)) {
+                dfsHelper(neighbor, visited, visitedOrder);
+            }
+        }
     }
 }
