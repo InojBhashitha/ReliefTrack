@@ -1,9 +1,11 @@
 package com.relieftrack.datastructure.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Graph {
     private final Map<Vertex, List<Edge>> adjacencyList;
@@ -32,5 +34,17 @@ public class Graph {
     public void addUndirectedEdge(Vertex source, Vertex destination, double weight) {
         addEdge(source, destination, weight);
         addEdge(destination, source, weight);
+    }
+
+    public List<Edge> getEdges(Vertex vertex) {
+        return adjacencyList.getOrDefault(vertex, Collections.emptyList());
+    }
+
+    public Set<Vertex> getVertices() {
+        return adjacencyList.keySet();
+    }
+
+    public Map<Vertex, List<Edge>> getAdjacencyList() {
+        return adjacencyList;
     }
 }
