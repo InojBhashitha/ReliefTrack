@@ -39,4 +39,21 @@ public class GraphTest {
         List<Edge> edgesFromV2 = graph.getEdges(v2);
         assertTrue(edgesFromV2.isEmpty());
     }
+
+    @Test
+    public void testAddEdgeUndirected() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo Warehouse");
+        Vertex v2 = new Vertex("W2", "Kandy Warehouse");
+
+        graph.addUndirectedEdge(v1, v2, 115.5);
+
+        List<Edge> edgesFromV1 = graph.getEdges(v1);
+        assertEquals(1, edgesFromV1.size());
+        assertEquals(v2, edgesFromV1.get(0).getDestination());
+
+        List<Edge> edgesFromV2 = graph.getEdges(v2);
+        assertEquals(1, edgesFromV2.size());
+        assertEquals(v1, edgesFromV2.get(0).getDestination());
+    }
 }
