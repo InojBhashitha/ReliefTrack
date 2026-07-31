@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
@@ -101,5 +102,62 @@ public class Graph {
                 dfsHelper(neighbor, visited, visitedOrder);
             }
         }
+    }
+
+    public Map<Vertex, Double> dijkstra(Vertex source) {
+        Map<Vertex, Double> distances = new HashMap<>();
+        if (source == null || !adjacencyList.containsKey(source)) {
+            return distances;
+        }
+
+        // Initialize distances
+        for (Vertex v : adjacencyList.keySet()) {
+            distances.put(v, Double.MAX_VALUE);
+        }
+        distances.put(source, 0.0);
+
+        // Helper class to store vertex-distance pairs in PriorityQueue
+        class NodeDistance implements Comparable<NodeDistance> {
+            final Vertex vertex;
+            final double distance;
+
+            NodeDistance(Vertex vertex, double distance) {
+                this.vertex = vertex;
+                this.distance = distance;
+            }
+
+            @Override
+            public int compareTo(NodeDistance o) {
+                return Double.compare(this.distance, o.distance);
+            }
+        }
+
+        PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
+        pq.add(new NodeDistance(source, 0.0));
+        Set<Vertex> settled = new HashSet<>();
+
+        while (!pq.isEmpty()) {
+            NodeDistance current = pq.poll();
+            Vertex u = current.vertex;
+
+            if (settled.contains(u)) {
+                continue;
+            }
+            settled.add(u);
+
+            List<Edge> edges = adjacencyList.getOrDefault(u, Collections.emptyList());
+            for (Edge edge : edges) {
+                Vertex v = edge.getDestination();
+                if (!settled.contains(v)) {
+                    double newDist = distances.get(u) + edge.getWeight();
+                    if (newDist < distances.get(v)) {
+                        distances.put(v, newDist);
+                        pq.add(new NodeDistance(v, newDist));
+                    }
+                }
+            }
+        }
+
+        return distances;
     }
 }
