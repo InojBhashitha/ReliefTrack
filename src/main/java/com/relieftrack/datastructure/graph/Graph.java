@@ -78,4 +78,19 @@ public class Graph {
         }
         return visitedOrder;
     }
+
+    public List<Vertex> dfs(Vertex start) {
+        List<Vertex> visitedOrder = new ArrayList<>();
+        if (start == null || !adjacencyList.containsKey(start)) {
+            return visitedOrder;
+        }
+
+        Set<Vertex> visited = new HashSet<>();
+        dfsHelper(start, visited, visitedOrder);
+        return visitedOrder;
+    }
+
+    private void dfsHelper(Vertex current, Set<Vertex> visited, List<Vertex> visitedOrder) {
+        // Recursive traversal logic to be completed in the next commit
+    }
 }
