@@ -82,4 +82,33 @@ public class GraphTest {
         assertEquals(4, dfsOrder.size());
         assertEquals(vA, dfsOrder.get(0));
     }
+
+    @Test
+    public void testDijkstraShortestPath() {
+        Graph graph = new Graph();
+        Vertex colombo = new Vertex("COL", "Colombo");
+        Vertex kandy = new Vertex("KAN", "Kandy");
+        Vertex galle = new Vertex("GAL", "Galle");
+        Vertex matara = new Vertex("MAT", "Matara");
+
+        // Set up distances
+        // Colombo to Kandy: 115 km
+        // Colombo to Galle: 125 km
+        // Galle to Matara: 45 km
+        // Kandy to Matara: 200 km
+        graph.addUndirectedEdge(colombo, kandy, 115.0);
+        graph.addUndirectedEdge(colombo, galle, 125.0);
+        graph.addUndirectedEdge(galle, matara, 45.0);
+        graph.addUndirectedEdge(kandy, matara, 200.0);
+
+        // Find shortest distances from Colombo
+        java.util.Map<Vertex, Double> shortestDistances = graph.dijkstra(colombo);
+
+        // Verify shortest path distances
+        assertEquals(0.0, shortestDistances.get(colombo));
+        assertEquals(115.0, shortestDistances.get(kandy));
+        assertEquals(125.0, shortestDistances.get(galle));
+        // Colombo -> Galle (125) -> Matara (45) = 170 km, which is shorter than Colombo -> Kandy (115) -> Matara (200) = 315 km
+        assertEquals(170.0, shortestDistances.get(matara));
+    }
 }
