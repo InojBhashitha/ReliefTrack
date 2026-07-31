@@ -102,4 +102,19 @@ public class Graph {
             }
         }
     }
+
+    public Map<Vertex, Double> dijkstra(Vertex source) {
+        Map<Vertex, Double> distances = new HashMap<>();
+        if (source == null || !adjacencyList.containsKey(source)) {
+            return distances;
+        }
+
+        for (Vertex vertex : adjacencyList.keySet()) {
+            distances.put(vertex, Double.MAX_VALUE);
+        }
+        distances.put(source, 0.0);
+
+        // Dijkstra's relaxation loop to be completed in the next commit
+        return distances;
+    }
 }
