@@ -28,4 +28,9 @@ public class Graph {
         Edge edge = new Edge(source, destination, weight);
         adjacencyList.get(source).add(edge);
     }
+
+    public void addUndirectedEdge(Vertex source, Vertex destination, double weight) {
+        addEdge(source, destination, weight);
+        addEdge(destination, source, weight);
+    }
 }
