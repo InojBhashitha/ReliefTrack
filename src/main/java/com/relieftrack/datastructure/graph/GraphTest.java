@@ -81,4 +81,33 @@ public class GraphTest {
         assertTrue(bfsResult.get(2).equals(v2) || bfsResult.get(2).equals(v3));
         assertEquals(v4, bfsResult.get(3));
     }
+
+    @Test
+    public void testDfsTraversal() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+        Vertex v3 = new Vertex("W3", "Galle");
+        Vertex v4 = new Vertex("W4", "Jaffna");
+
+        // W1 -> W2 -> W4
+        // W1 -> W3
+        graph.addEdge(v1, v2, 115.0);
+        graph.addEdge(v1, v3, 120.0);
+        graph.addEdge(v2, v4, 320.0);
+
+        List<Vertex> dfsResult = graph.dfs(v1);
+
+        assertEquals(4, dfsResult.size());
+        assertEquals(v1, dfsResult.get(0));
+        // DFS should go all the way down the path W1 -> W2 -> W4 before checking W3 (or W1 -> W3 before W2)
+        if (dfsResult.get(1).equals(v2)) {
+            assertEquals(v4, dfsResult.get(2));
+            assertEquals(v3, dfsResult.get(3));
+        } else {
+            assertEquals(v3, dfsResult.get(1));
+            assertEquals(v2, dfsResult.get(2));
+            assertEquals(v4, dfsResult.get(3));
+        }
+    }
 }
