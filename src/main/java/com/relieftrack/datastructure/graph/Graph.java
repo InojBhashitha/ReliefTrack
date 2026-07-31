@@ -3,8 +3,11 @@ package com.relieftrack.datastructure.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class Graph {
@@ -46,5 +49,57 @@ public class Graph {
 
     public Map<Vertex, List<Edge>> getAdjacencyList() {
         return adjacencyList;
+    }
+
+    public List<Vertex> bfs(Vertex start) {
+        List<Vertex> visitedOrder = new ArrayList<>();
+        if (start == null || !adjacencyList.containsKey(start)) {
+            return visitedOrder;
+        }
+
+        Queue<Vertex> queue = new LinkedList<>();
+        Set<Vertex> visited = new HashSet<>();
+
+        queue.add(start);
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            Vertex current = queue.poll();
+            visitedOrder.add(current);
+
+            List<Edge> edges = adjacencyList.getOrDefault(current, Collections.emptyList());
+            for (Edge edge : edges) {
+                Vertex neighbor = edge.getDestination();
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+        }
+        return visitedOrder;
+    }
+
+    public List<Vertex> dfs(Vertex start) {
+        List<Vertex> visitedOrder = new ArrayList<>();
+        if (start == null || !adjacencyList.containsKey(start)) {
+            return visitedOrder;
+        }
+
+        Set<Vertex> visited = new HashSet<>();
+        dfsHelper(start, visited, visitedOrder);
+        return visitedOrder;
+    }
+
+    private void dfsHelper(Vertex current, Set<Vertex> visited, List<Vertex> visitedOrder) {
+        visited.add(current);
+        visitedOrder.add(current);
+
+        List<Edge> edges = adjacencyList.getOrDefault(current, Collections.emptyList());
+        for (Edge edge : edges) {
+            Vertex neighbor = edge.getDestination();
+            if (!visited.contains(neighbor)) {
+                dfsHelper(neighbor, visited, visitedOrder);
+            }
+        }
     }
 }
