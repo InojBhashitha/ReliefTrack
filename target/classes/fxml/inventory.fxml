@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.InventoryController"
       styleClass="page"
-      spacing="12">
+      spacing="16">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
     <Label text="Inventory" styleClass="page-title"/>
-    <Label text="Track stock levels and item readiness across all relief hubs." styleClass="card-label"/>
+    <Label text="Track stock levels and item readiness across all relief hubs." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading inventory data..." styleClass="card-label"/>
+
+    <HBox spacing="12">
+        <TextField fx:id="itemNameField" promptText="Item name" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="quantityField" promptText="Quantity" prefWidth="120"/>
+        <TextField fx:id="warehouseField" promptText="Warehouse" prefWidth="160"/>
+        <Button text="Add Item" onAction="#handleAddInventory" styleClass="quick-action"/>
+    </HBox>
+
+    <ListView fx:id="inventoryList" prefHeight="280" styleClass="activity-list"/>
 </VBox>

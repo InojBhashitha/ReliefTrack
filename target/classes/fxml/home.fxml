@@ -10,6 +10,7 @@
 <VBox spacing="20"
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.HomeController"
       styleClass="page">
 
     <padding>

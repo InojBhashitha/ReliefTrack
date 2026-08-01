@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.relieftrack.controller.RequestController"
       styleClass="page"
-      spacing="12">
+      spacing="16">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
@@ -16,4 +16,13 @@
     <Label text="Requests" styleClass="page-title"/>
     <Label text="Review emergency aid requests and handle priorities by urgency." styleClass="subtitle-text"/>
     <Label fx:id="summaryLabel" text="Loading request data..." styleClass="card-label"/>
+
+    <HBox spacing="12">
+        <TextField fx:id="organizationField" promptText="Organization" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="priorityField" promptText="Priority" prefWidth="140"/>
+        <TextField fx:id="itemField" promptText="Item" prefWidth="160"/>
+        <Button text="Add Request" onAction="#handleAddRequest" styleClass="quick-action"/>
+    </HBox>
+
+    <ListView fx:id="requestList" prefHeight="280" styleClass="activity-list"/>
 </VBox>

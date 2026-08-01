@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.relieftrack.controller.DispatchController"
       styleClass="page"
-      spacing="12">
+      spacing="16">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
@@ -16,4 +16,13 @@
     <Label text="Dispatch" styleClass="page-title"/>
     <Label text="Follow deployments and keep dispatch actions visible and organized." styleClass="subtitle-text"/>
     <Label fx:id="summaryLabel" text="Loading dispatch data..." styleClass="card-label"/>
+
+    <HBox spacing="12">
+        <TextField fx:id="requestField" promptText="Request ID" prefWidth="140"/>
+        <TextField fx:id="warehouseField" promptText="Warehouse" prefWidth="180"/>
+        <TextField fx:id="statusField" promptText="Status" prefWidth="160"/>
+        <Button text="Schedule Dispatch" onAction="#handleAddDispatch" styleClass="quick-action"/>
+    </HBox>
+
+    <ListView fx:id="dispatchList" prefHeight="280" styleClass="activity-list"/>
 </VBox>

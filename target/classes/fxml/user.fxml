@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.UserController"
       styleClass="page"
-      spacing="12">
+      spacing="16">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
     <Label text="Users" styleClass="page-title"/>
     <Label text="Manage system users, roles, and permissions from a centralized admin view." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading user data..." styleClass="card-label"/>
+
+    <HBox spacing="12">
+        <TextField fx:id="usernameField" promptText="Username" prefWidth="160"/>
+        <TextField fx:id="fullNameField" promptText="Full name" HBox.hgrow="ALWAYS"/>
+        <PasswordField fx:id="passwordField" promptText="Password" prefWidth="180"/>
+        <ChoiceBox fx:id="roleChoice" prefWidth="180"/>
+        <Button text="Add User" onAction="#handleAddUser" styleClass="quick-action"/>
+        <Button text="Update User" onAction="#handleUpdateUser" styleClass="quick-action"/>
+        <Button text="Delete User" onAction="#handleDeleteUser" styleClass="quick-action"/>
+    </HBox>
+
+    <TableView fx:id="userTable" prefHeight="320" styleClass="data-table">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
+            <TableColumn fx:id="usernameColumn" text="Username" prefWidth="180"/>
+            <TableColumn fx:id="fullNameColumn" text="Full Name" prefWidth="260"/>
+            <TableColumn fx:id="roleColumn" text="Role" prefWidth="180"/>
+        </columns>
+    </TableView>
 </VBox>

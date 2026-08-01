@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.relieftrack.controller.ReportController"
       styleClass="page"
-      spacing="12">
+      spacing="16">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
@@ -16,4 +19,25 @@
     <Label text="Reports" styleClass="page-title"/>
     <Label text="Generate summaries of inventory, dispatches, and operational activity." styleClass="subtitle-text"/>
     <Label fx:id="summaryLabel" text="Loading report summary..." styleClass="card-label"/>
+
+    <HBox spacing="16">
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Inventory" styleClass="card-label"/>
+            <Label fx:id="inventoryStat" text="0" styleClass="card-number"/>
+        </VBox>
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Warehouses" styleClass="card-label"/>
+            <Label fx:id="warehouseStat" text="0" styleClass="card-number"/>
+        </VBox>
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Requests" styleClass="card-label"/>
+            <Label fx:id="requestStat" text="0" styleClass="card-number"/>
+        </VBox>
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Dispatches" styleClass="card-label"/>
+            <Label fx:id="dispatchStat" text="0" styleClass="card-number"/>
+        </VBox>
+    </HBox>
+
+    <ListView fx:id="reportList" prefHeight="260" styleClass="activity-list"/>
 </VBox>
