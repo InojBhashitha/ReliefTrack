@@ -97,6 +97,9 @@ public class DatabaseInitializer {
                     );
                     """);
 
+            // Correct the legacy category value used by earlier demo databases.
+            statement.executeUpdate("UPDATE relief_items SET category = 'MEDICINE' WHERE category = 'MEDICAL'");
+
             seedAdminUser(connection);
             seedDemoData(connection);
             System.out.println("✅ Database initialized successfully!");
@@ -160,7 +163,7 @@ public class DatabaseInitializer {
             itemInsert.executeUpdate();
 
             itemInsert.setString(1, "Medical Kit");
-            itemInsert.setString(2, "MEDICAL");
+            itemInsert.setString(2, "MEDICINE");
             itemInsert.setString(3, "2027-11-15");
             itemInsert.executeUpdate();
         }

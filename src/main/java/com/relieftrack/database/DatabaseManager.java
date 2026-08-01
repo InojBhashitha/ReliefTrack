@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DatabaseManager {
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DatabaseConfig.DATABASE_URL);
+        return DriverManager.getConnection(DatabaseConfig.getDatabaseUrl());
     }
 
 }

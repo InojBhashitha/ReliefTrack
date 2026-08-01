@@ -5,7 +5,9 @@ import com.relieftrack.enums.Role;
 import com.relieftrack.model.User;
 import com.relieftrack.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserAuthenticationServiceTest {
 
     @Test
-    void authenticateUsesHashLookupCache() throws Exception {
+    void authenticateUsesHashLookupCache(@TempDir Path temporaryDirectory) throws Exception {
+        System.setProperty("relieftrack.database.url", "jdbc:sqlite:" + temporaryDirectory.resolve("authentication-test.db"));
         DatabaseInitializer.initializeDatabase();
 
         UserRepository repository = new UserRepository();
@@ -32,5 +35,6 @@ class UserAuthenticationServiceTest {
         assertTrue(authenticatedUser.isPresent());
         assertEquals(username, authenticatedUser.get().getUsername());
         assertTrue(repository.getUserLookupTable().containsKey(username));
+        System.clearProperty("relieftrack.database.url");
     }
 }

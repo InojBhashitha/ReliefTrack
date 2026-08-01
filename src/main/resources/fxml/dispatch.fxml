@@ -18,10 +18,11 @@
     <Label fx:id="summaryLabel" text="Loading dispatch data..." styleClass="card-label"/>
 
     <HBox spacing="12">
-        <TextField fx:id="requestField" promptText="Request ID" prefWidth="140"/>
-        <TextField fx:id="warehouseField" promptText="Warehouse" prefWidth="180"/>
-        <TextField fx:id="statusField" promptText="Status" prefWidth="160"/>
+        <ChoiceBox fx:id="requestChoice" prefWidth="310"/>
+        <ChoiceBox fx:id="warehouseChoice" prefWidth="230"/>
+        <ChoiceBox fx:id="statusChoice" prefWidth="160"/>
         <Button text="Schedule Dispatch" onAction="#handleAddDispatch" styleClass="quick-action"/>
+        <Button text="Update Status" onAction="#handleUpdateStatus" styleClass="quick-action"/>
     </HBox>
 
     <ListView fx:id="dispatchList" prefHeight="280" styleClass="activity-list"/>
