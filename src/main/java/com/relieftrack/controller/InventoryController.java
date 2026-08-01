@@ -158,10 +158,7 @@ public class InventoryController {
     }
 
     private ReliefItem findItemByName(String name) throws SQLException {
-        return reliefItemService.findAll().stream()
-                .filter(item -> item.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
+        return reliefItemService.findByName(name).orElse(null);
     }
 
     private int parseNonNegative(String value, String fieldName) {
