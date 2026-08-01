@@ -19,9 +19,18 @@
 
     <HBox spacing="12">
         <TextField fx:id="organizationField" promptText="Organization" HBox.hgrow="ALWAYS"/>
-        <TextField fx:id="priorityField" promptText="Priority" prefWidth="140"/>
-        <TextField fx:id="itemField" promptText="Item" prefWidth="160"/>
+        <ChoiceBox fx:id="disasterTypeChoice" prefWidth="150"/>
+        <ChoiceBox fx:id="itemChoice" prefWidth="180"/>
+        <TextField fx:id="quantityField" promptText="Quantity" prefWidth="110"/>
+    </HBox>
+
+    <HBox spacing="12">
+        <ChoiceBox fx:id="priorityChoice" prefWidth="150"/>
+        <ChoiceBox fx:id="statusChoice" prefWidth="150"/>
         <Button text="Add Request" onAction="#handleAddRequest" styleClass="quick-action"/>
+        <Button text="Update" onAction="#handleUpdateRequest" styleClass="quick-action"/>
+        <Button text="Delete" onAction="#handleDeleteRequest" styleClass="quick-action"/>
+        <Button text="Show Triage Queue" onAction="#handleShowTriageQueue" styleClass="quick-action"/>
     </HBox>
 
     <ListView fx:id="requestList" prefHeight="280" styleClass="activity-list"/>

@@ -19,9 +19,17 @@
 
     <HBox spacing="12">
         <TextField fx:id="itemNameField" promptText="Item name" HBox.hgrow="ALWAYS"/>
+        <ChoiceBox fx:id="categoryChoice" prefWidth="130"/>
+        <DatePicker fx:id="expiryDatePicker" promptText="Expiry date" prefWidth="150"/>
+        <ChoiceBox fx:id="warehouseChoice" prefWidth="180"/>
+    </HBox>
+
+    <HBox spacing="12">
         <TextField fx:id="quantityField" promptText="Quantity" prefWidth="120"/>
-        <TextField fx:id="warehouseField" promptText="Warehouse" prefWidth="160"/>
+        <TextField fx:id="minimumStockField" promptText="Minimum stock" prefWidth="140"/>
         <Button text="Add Item" onAction="#handleAddInventory" styleClass="quick-action"/>
+        <Button text="Update" onAction="#handleUpdateInventory" styleClass="quick-action"/>
+        <Button text="Delete" onAction="#handleDeleteInventory" styleClass="quick-action"/>
     </HBox>
 
     <ListView fx:id="inventoryList" prefHeight="280" styleClass="activity-list"/>

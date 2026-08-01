@@ -22,6 +22,8 @@
         <TextField fx:id="districtField" promptText="District" prefWidth="160"/>
         <TextField fx:id="addressField" promptText="Address" HBox.hgrow="ALWAYS"/>
         <Button text="Add Warehouse" onAction="#handleAddWarehouse" styleClass="quick-action"/>
+        <Button text="Update" onAction="#handleUpdateWarehouse" styleClass="quick-action"/>
+        <Button text="Delete" onAction="#handleDeleteWarehouse" styleClass="quick-action"/>
     </HBox>
 
     <ListView fx:id="warehouseList" prefHeight="280" styleClass="activity-list"/>
