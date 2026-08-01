@@ -2,10 +2,13 @@ package com.relieftrack.controller;
 
 import java.io.IOException;
 
+import com.relieftrack.config.AppConfig;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 public class DashboardController {
 
@@ -67,6 +70,16 @@ public class DashboardController {
 
     @FXML
     private void logout() {
-        System.out.println("Logout clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.LOGIN_FXML));
+            Scene scene = new Scene(loader.load(), AppConfig.WINDOW_WIDTH, AppConfig.WINDOW_HEIGHT);
+
+            Stage stage = (Stage) contentPane.getScene().getWindow();
+            stage.setTitle(AppConfig.APP_TITLE);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
