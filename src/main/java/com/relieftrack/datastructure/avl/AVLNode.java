@@ -15,11 +15,11 @@ public class AVLNode<K extends Comparable<K>, V> {
 
     public K getKey() { return key; }
     public V getValue() { return value; }
-    void setValue(V value) { this.value = value; }
-    int getHeight() { return height; }
-    void setHeight(int height) { this.height = height; }
-    AVLNode<K, V> getLeft() { return left; }
-    void setLeft(AVLNode<K, V> left) { this.left = left; }
-    AVLNode<K, V> getRight() { return right; }
-    void setRight(AVLNode<K, V> right) { this.right = right; }
+    public void setValue(V value) { this.value = value; }
+    public int getHeight() { return height; }
+    public void setHeight(int height) { this.height = height; }
+    public AVLNode<K, V> getLeft() { return left; }
+    public void setLeft(AVLNode<K, V> left) { this.left = left; }
+    public AVLNode<K, V> getRight() { return right; }
+    public void setRight(AVLNode<K, V> right) { this.right = right; }
 }

@@ -1,6 +1,14 @@
 # Compiled class file
 *.class
 
+# Maven build target directory
+target/
+
+# SQLite databases
+*.db
+*.sqlite
+data/*.db
+
 # Log file
 *.log
 
@@ -23,6 +31,7 @@
 hs_err_pid*
 replay_pid*
 
-# VS Code settings
+# VS Code & IDE settings
 .vscode/
-
+.idea/
+*.iml
