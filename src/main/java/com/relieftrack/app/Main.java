@@ -1,5 +1,7 @@
 package com.relieftrack.app;
 
+import com.relieftrack.config.AppConfig;
+import com.relieftrack.database.DatabaseInitializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,16 +11,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        DatabaseInitializer.initializeDatabase();
 
-        FXMLLoader loader = new FXMLLoader(
-                Main.class.getResource("/fxml/login.fxml")
-        );
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource(AppConfig.LOGIN_FXML));
+        Scene scene = new Scene(loader.load(), AppConfig.WINDOW_WIDTH, AppConfig.WINDOW_HEIGHT);
 
-        Scene scene = new Scene(loader.load());
-
-        stage.setTitle("ReliefTrack");
+        stage.setTitle(AppConfig.APP_TITLE);
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
     }
 

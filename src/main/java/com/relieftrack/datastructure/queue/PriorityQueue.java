@@ -27,6 +27,7 @@ public class PriorityQueue {
         return size;
     }
 
+    // Convert enum priority into integer
     private int getPriorityValue(PriorityLevel priority) {
         switch (priority) {
             case CRITICAL:
@@ -42,51 +43,63 @@ public class PriorityQueue {
         }
     }
 
+    // Insert request according to priority
     public void enqueue(EmergencyRequest request) {
 
         PriorityQueueNode newNode = new PriorityQueueNode(request);
 
-        // Case 1 - Queue is empty
+        // Queue is empty
         if (isEmpty()) {
             front = newNode;
             size++;
             return;
         }
 
-        // Case 2 - Insert at the front
+        // Insert at front if highest priority
         if (getPriorityValue(request.getPriority()) > getPriorityValue(front.getRequest().getPriority())) {
+
             newNode.setNext(front);
             front = newNode;
             size++;
             return;
         }
 
+        // Find correct position
         PriorityQueueNode current = front;
 
-        while (current.getNext() != null && getPriorityValue(
-                current.getNext().getRequest().getPriority()) >= getPriorityValue(request.getPriority())) {
+        while (current.getNext() != null &&
+                getPriorityValue(current.getNext().getRequest().getPriority()) >= getPriorityValue(
+                        request.getPriority())) {
+
             current = current.getNext();
         }
 
+        // Insert node
         newNode.setNext(current.getNext());
         current.setNext(newNode);
-        size++;
 
+        size++;
     }
 
+    // Remove highest priority request
     public EmergencyRequest dequeue() {
+
         if (isEmpty()) {
             return null;
         }
 
         EmergencyRequest request = front.getRequest();
+
         front = front.getNext();
+
         size--;
 
         return request;
     }
 
+    // Return first request without removing
     public EmergencyRequest peek() {
+
         if (isEmpty()) {
             return null;
         }
@@ -94,6 +107,7 @@ public class PriorityQueue {
         return front.getRequest();
     }
 
+    // Display queue
     public void display() {
 
         if (isEmpty()) {
@@ -103,7 +117,7 @@ public class PriorityQueue {
 
         PriorityQueueNode current = front;
 
-        System.out.println("------ Priority Queue ------");
+        System.out.println("-------- Priority Queue --------");
 
         while (current != null) {
 
@@ -112,6 +126,6 @@ public class PriorityQueue {
             current = current.getNext();
         }
 
-        System.out.println("----------------------------");
+        System.out.println("--------------------------------");
     }
 }

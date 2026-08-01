@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.DispatchController"
+      styleClass="page"
+      spacing="16">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <Label text="Dispatch" styleClass="page-title"/>
+    <Label text="Follow deployments and keep dispatch actions visible and organized." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading dispatch data..." styleClass="card-label"/>
+
+    <HBox spacing="12">
+        <ChoiceBox fx:id="requestChoice" prefWidth="310"/>
+        <ChoiceBox fx:id="warehouseChoice" prefWidth="230"/>
+        <ChoiceBox fx:id="statusChoice" prefWidth="160"/>
+        <Button text="Schedule Dispatch" onAction="#handleAddDispatch" styleClass="quick-action"/>
+        <Button text="Update Status" onAction="#handleUpdateStatus" styleClass="quick-action"/>
+    </HBox>
+
+    <ListView fx:id="dispatchList" prefHeight="280" styleClass="activity-list"/>
+</VBox>

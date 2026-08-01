@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.relieftrack.controller.DashboardController"
+            stylesheets="@../css/style.css">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox spacing="16" styleClass="top-bar" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="14" right="20" bottom="14" left="20"/>
+            </padding>
+
+            <Label text="ReliefTrack" styleClass="app-title"/>
+
+            <Pane HBox.hgrow="ALWAYS"/>
+
+            <Label text="Administrator" styleClass="profile-pill"/>
+            <Button text="Logout" onAction="#logout" styleClass="logout-button"/>
+        </HBox>
+    </top>
+
+    <!-- Sidebar -->
+    <left>
+        <VBox spacing="10"
+              prefWidth="220"
+              styleClass="sidebar">
+
+            <Label text="Navigation" styleClass="sidebar-title"/>
+
+            <Button text="Dashboard" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Inventory" onAction="#showInventory" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Warehouses" onAction="#showWarehouses" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Requests" onAction="#showRequests" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Dispatch" onAction="#showDispatch" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Reports" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="Users" onAction="#showUsers" maxWidth="Infinity" styleClass="nav-button"/>
+
+        </VBox>
+    </left>
+
+    <!-- Content -->
+
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content"/>
+    </center>
+
+    <!-- Bottom Status -->
+
+    <bottom>
+        <HBox styleClass="status-bar" alignment="CENTER_LEFT">
+            <Label text="System status: Database connected" styleClass="status-text"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
