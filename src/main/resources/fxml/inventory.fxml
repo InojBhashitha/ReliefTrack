@@ -6,6 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.InventoryController"
       styleClass="page"
       spacing="12">
     <padding>
@@ -14,4 +15,6 @@
 
     <Label text="Inventory" styleClass="page-title"/>
     <Label text="Track stock levels and item readiness across all relief hubs." styleClass="card-label"/>
+    <Label text="Track live stock levels across the relief network." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading inventory data..." styleClass="card-label"/>
 </VBox>

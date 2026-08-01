@@ -6,6 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.UserController"
       styleClass="page"
       spacing="12">
     <padding>
@@ -14,4 +15,5 @@
 
     <Label text="Users" styleClass="page-title"/>
     <Label text="Manage system users, roles, and permissions from a centralized admin view." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading user data..." styleClass="card-label"/>
 </VBox>

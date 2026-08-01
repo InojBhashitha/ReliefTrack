@@ -6,6 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.WarehouseController"
       styleClass="page"
       spacing="12">
     <padding>
@@ -14,4 +15,6 @@
 
     <Label text="Warehouses" styleClass="page-title"/>
     <Label text="Manage storage location status, capacity, and distribution readiness." styleClass="card-label"/>
+    <Label text="Track storage locations, capacity, and district coverage." styleClass="subtitle-text"/>
+    <Label fx:id="summaryLabel" text="Loading warehouse data..." styleClass="card-label"/>
 </VBox>
