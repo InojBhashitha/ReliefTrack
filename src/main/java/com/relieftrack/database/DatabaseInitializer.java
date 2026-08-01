@@ -1,18 +1,21 @@
 package com.relieftrack.database;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HexFormat;
 
 public class DatabaseInitializer {
 
     public static void initializeDatabase() {
+        try (Connection connection = DatabaseManager.getConnection();
+             Statement statement = connection.createStatement()) {
 
-        try (
-                Connection connection = DatabaseManager.getConnection();
-                Statement statement = connection.createStatement()) {
-
-            // Users
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS users (
                         user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +26,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Warehouses
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS warehouses (
                         warehouse_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +35,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Relief Items
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS relief_items (
                         item_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +44,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Inventory
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS inventory (
                         inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,7 +57,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Emergency Requests
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS emergency_requests (
                         request_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,7 +72,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Dispatches
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS dispatches (
                         dispatch_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,7 +85,6 @@ public class DatabaseInitializer {
                     );
                     """);
 
-            // Warehouse Connections (Graph)
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS warehouse_connections (
                         connection_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,11 +97,47 @@ public class DatabaseInitializer {
                     );
                     """);
 
+            seedAdminUser(connection);
             System.out.println("✅ Database initialized successfully!");
 
         } catch (SQLException e) {
             System.err.println("❌ Failed to initialize database.");
             e.printStackTrace();
+        }
+    }
+
+    private static void seedAdminUser(Connection connection) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM users WHERE username = ?";
+        try (PreparedStatement checkStatement = connection.prepareStatement(checkSql)) {
+            checkStatement.setString(1, "admin");
+
+            try (ResultSet resultSet = checkStatement.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    System.out.println("⚠️ Admin user already exists. Skipping seeding.");
+                    return;
+                }
+            }
+        }
+
+        String insertSql = "INSERT INTO users (username, password_hash, full_name, role) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+            insertStatement.setString(1, "admin");
+            insertStatement.setString(2, hashPassword("admin123"));
+            insertStatement.setString(3, "System Administrator");
+            insertStatement.setString(4, "ADMIN");
+            insertStatement.executeUpdate();
+        }
+
+        System.out.println("✅ Default admin user seeded.");
+    }
+
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 algorithm is not available", e);
         }
     }
 }

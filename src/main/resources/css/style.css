@@ -178,3 +178,9 @@
     -fx-text-fill: #2563eb;
     -fx-font-weight: bold;
 }
+
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.16), 16, 0, 0, 4);
+}
