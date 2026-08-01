@@ -11,15 +11,16 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                Main.class.getResource("/fxml/login.fxml")
-        );
+        Main.class.getResource("/fxml/dashboard.fxml")
+);
 
-        Scene scene = new Scene(loader.load());
+Scene scene = new Scene(loader.load(), 1200, 700);
 
-        stage.setTitle("ReliefTrack");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+stage.setTitle("ReliefTrack");
+
+stage.setScene(scene);
+
+stage.show();
     }
 
     public static void main(String[] args) {
