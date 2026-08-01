@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<VBox spacing="20"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.relieftrack.controller.HomeController"
+      styleClass="page">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <VBox spacing="4" styleClass="page-header">
+        <Label text="Admin Dashboard" styleClass="page-title"/>
+        <Label text="Monitor relief operations, stock readiness, and dispatch progress in one place."
+               styleClass="subtitle-text"/>
+    </VBox>
+
+    <HBox spacing="20">
+
+        <VBox styleClass="dashboard-card">
+            <Label text="Inventory Items" styleClass="card-label"/>
+            <Label text="245" styleClass="card-number"/>
+            <Label text="+12 this week" styleClass="small-text"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="Open Requests" styleClass="card-label"/>
+            <Label text="17" styleClass="card-number"/>
+            <Label text="6 high priority" styleClass="small-text"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="Warehouses" styleClass="card-label"/>
+            <Label text="8" styleClass="card-number"/>
+            <Label text="2 under review" styleClass="small-text"/>
+        </VBox>
+
+        <VBox styleClass="dashboard-card">
+            <Label text="Dispatch Rate" styleClass="card-label"/>
+            <Label text="92%" styleClass="card-number"/>
+            <Label text="On schedule" styleClass="small-text"/>
+        </VBox>
+
+    </HBox>
+
+    <GridPane hgap="20" vgap="20">
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="65" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <VBox styleClass="panel" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Open Requests" styleClass="section-title"/>
+
+            <TableView prefHeight="250" styleClass="data-table">
+                <columns>
+                    <TableColumn text="ID" prefWidth="70"/>
+                    <TableColumn text="Location" prefWidth="120"/>
+                    <TableColumn text="Priority" prefWidth="100"/>
+                    <TableColumn text="Status" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <VBox styleClass="panel" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Critical Alerts" styleClass="section-title"/>
+
+            <ListView prefHeight="250" styleClass="activity-list">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Water shortage in North District"/>
+                        <String fx:value="Warehouse #4 temperature check pending"/>
+                        <String fx:value="2 emergency dispatches awaiting approval"/>
+                        <String fx:value="Food supply low in coastal zone"/>
+                    </FXCollections>
+                </items>
+            </ListView>
+        </VBox>
+
+        <VBox styleClass="panel" spacing="14" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Label text="Warehouse Status" styleClass="section-title"/>
+
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="6">
+                    <Label text="Central Hub" styleClass="mini-label"/>
+                    <ProgressBar progress="0.84" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="6">
+                    <Label text="North Depot" styleClass="mini-label"/>
+                    <ProgressBar progress="0.63" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="6">
+                    <Label text="Coastal Warehouse" styleClass="mini-label"/>
+                    <ProgressBar progress="0.72" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="6">
+                    <Label text="Eastern Station" styleClass="mini-label"/>
+                    <ProgressBar progress="0.51" maxWidth="Infinity"/>
+                </VBox>
+            </GridPane>
+        </VBox>
+
+        <VBox styleClass="panel" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label text="Quick Actions" styleClass="section-title"/>
+
+            <Button text="Create Inventory Update" maxWidth="Infinity" styleClass="quick-action"/>
+            <Button text="Review Pending Dispatches" maxWidth="Infinity" styleClass="quick-action"/>
+            <Button text="Generate Weekly Report" maxWidth="Infinity" styleClass="quick-action"/>
+        </VBox>
+
+    </GridPane>
+
+</VBox>

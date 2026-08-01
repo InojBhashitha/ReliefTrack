@@ -21,7 +21,7 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
         ) {
 
             statement.setString(1, item.getName());
@@ -29,6 +29,11 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
             statement.setString(3, item.getExpiryDate().toString());
 
             statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                if (keys.next()) {
+                    item.setItemId(keys.getInt(1));
+                }
+            }
         }
     }
 
