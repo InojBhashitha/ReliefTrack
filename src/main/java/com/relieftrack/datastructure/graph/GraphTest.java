@@ -111,4 +111,32 @@ public class GraphTest {
         // Colombo -> Galle (125) -> Matara (45) = 170 km, which is shorter than Colombo -> Kandy (115) -> Matara (200) = 315 km
         assertEquals(170.0, shortestDistances.get(matara));
     }
+
+    @Test
+    public void testGetShortestPath() {
+        Graph graph = new Graph();
+        Vertex colombo = new Vertex("COL", "Colombo");
+        Vertex kandy = new Vertex("KAN", "Kandy");
+        Vertex galle = new Vertex("GAL", "Galle");
+        Vertex matara = new Vertex("MAT", "Matara");
+
+        graph.addUndirectedEdge(colombo, kandy, 115.0);
+        graph.addUndirectedEdge(colombo, galle, 125.0);
+        graph.addUndirectedEdge(galle, matara, 45.0);
+        graph.addUndirectedEdge(kandy, matara, 200.0);
+
+        List<Vertex> path = graph.getShortestPath(colombo, matara);
+
+        assertEquals(3, path.size());
+        assertEquals(colombo, path.get(0));
+        assertEquals(galle, path.get(1));
+        assertEquals(matara, path.get(2));
+
+        // Test unreachable destination
+        Vertex jaffna = new Vertex("JAF", "Jaffna");
+        graph.addVertex(jaffna);
+        List<Vertex> unreachablePath = graph.getShortestPath(colombo, jaffna);
+        assertTrue(unreachablePath.isEmpty());
+    }
 }
+

@@ -160,4 +160,78 @@ public class Graph {
 
         return distances;
     }
+
+    public List<Vertex> getShortestPath(Vertex source, Vertex destination) {
+        if (source == null || destination == null || !adjacencyList.containsKey(source) || !adjacencyList.containsKey(destination)) {
+            return Collections.emptyList();
+        }
+
+        Map<Vertex, Double> distances = new HashMap<>();
+        Map<Vertex, Vertex> predecessors = new HashMap<>();
+
+        for (Vertex v : adjacencyList.keySet()) {
+            distances.put(v, Double.MAX_VALUE);
+        }
+        distances.put(source, 0.0);
+
+        class NodeDistance implements Comparable<NodeDistance> {
+            final Vertex vertex;
+            final double distance;
+
+            NodeDistance(Vertex vertex, double distance) {
+                this.vertex = vertex;
+                this.distance = distance;
+            }
+
+            @Override
+            public int compareTo(NodeDistance o) {
+                return Double.compare(this.distance, o.distance);
+            }
+        }
+
+        PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
+        pq.add(new NodeDistance(source, 0.0));
+        Set<Vertex> settled = new HashSet<>();
+
+        while (!pq.isEmpty()) {
+            NodeDistance current = pq.poll();
+            Vertex u = current.vertex;
+
+            if (u.equals(destination)) {
+                break;
+            }
+
+            if (settled.contains(u)) {
+                continue;
+            }
+            settled.add(u);
+
+            List<Edge> edges = adjacencyList.getOrDefault(u, Collections.emptyList());
+            for (Edge edge : edges) {
+                Vertex v = edge.getDestination();
+                if (!settled.contains(v)) {
+                    double newDist = distances.get(u) + edge.getWeight();
+                    if (newDist < distances.get(v)) {
+                        distances.put(v, newDist);
+                        predecessors.put(v, u);
+                        pq.add(new NodeDistance(v, newDist));
+                    }
+                }
+            }
+        }
+
+        if (distances.get(destination) == Double.MAX_VALUE) {
+            return Collections.emptyList();
+        }
+
+        List<Vertex> path = new ArrayList<>();
+        Vertex step = destination;
+        while (step != null) {
+            path.add(step);
+            step = predecessors.get(step);
+        }
+        Collections.reverse(path);
+        return path;
+    }
 }
+
