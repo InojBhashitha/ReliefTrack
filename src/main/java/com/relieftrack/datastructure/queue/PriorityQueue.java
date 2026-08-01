@@ -27,38 +27,105 @@ public class PriorityQueue {
         return size;
     }
 
-    /** Adds a request in descending priority order (CRITICAL first). */
-    public void enqueue(EmergencyRequest request) {
-        if (request == null || request.getPriority() == null) {
-            throw new IllegalArgumentException("A request with a priority is required.");
+    // Convert enum priority into integer
+    private int getPriorityValue(PriorityLevel priority) {
+        switch (priority) {
+            case CRITICAL:
+                return 4;
+            case HIGH:
+                return 3;
+            case MEDIUM:
+                return 2;
+            case LOW:
+                return 1;
+            default:
+                return 0;
         }
+    }
+
+    // Insert request according to priority
+    public void enqueue(EmergencyRequest request) {
+
         PriorityQueueNode newNode = new PriorityQueueNode(request);
-        if (front == null || hasHigherPriority(request, front.getRequest())) {
+
+        // Queue is empty
+        if (isEmpty()) {
+            front = newNode;
+            size++;
+            return;
+        }
+
+        // Insert at front if highest priority
+        if (getPriorityValue(request.getPriority()) > getPriorityValue(front.getRequest().getPriority())) {
+
             newNode.setNext(front);
             front = newNode;
-        } else {
-            PriorityQueueNode current = front;
-            while (current.getNext() != null && !hasHigherPriority(request, current.getNext().getRequest())) {
-                current = current.getNext();
-            }
-            newNode.setNext(current.getNext());
-            current.setNext(newNode);
+            size++;
+            return;
         }
+
+        // Find correct position
+        PriorityQueueNode current = front;
+
+        while (current.getNext() != null &&
+                getPriorityValue(current.getNext().getRequest().getPriority()) >= getPriorityValue(
+                        request.getPriority())) {
+
+            current = current.getNext();
+        }
+
+        // Insert node
+        newNode.setNext(current.getNext());
+        current.setNext(newNode);
+
         size++;
     }
 
+    // Remove highest priority request
     public EmergencyRequest dequeue() {
-        if (front == null) return null;
+
+        if (isEmpty()) {
+            return null;
+        }
+
         EmergencyRequest request = front.getRequest();
+
         front = front.getNext();
+
         size--;
+
         return request;
     }
 
-    public EmergencyRequest peek() { return front == null ? null : front.getRequest(); }
+    // Return first request without removing
+    public EmergencyRequest peek() {
 
-    private boolean hasHigherPriority(EmergencyRequest first, EmergencyRequest second) {
-        return first.getPriority().ordinal() > second.getPriority().ordinal();
+        if (isEmpty()) {
+            return null;
+        }
+
+        return front.getRequest();
     }
 
+    // Display queue
+    public void display() {
+
+        if (isEmpty()) {
+            System.out.println("Priority Queue is empty.");
+            return;
+        }
+
+        PriorityQueueNode current = front;
+
+        System.out.println("-------- Priority Queue --------");
+
+        while (current != null) {
+
+            System.out.println(current.getRequest());
+
+            current = current.getNext();
+        }
+
+        System.out.println("--------------------------------");
+    }
 }
