@@ -21,7 +21,7 @@
 
             <Pane HBox.hgrow="ALWAYS"/>
 
-            <Label text="Administrator" styleClass="profile-pill"/>
+            <Label text="Administrator" styleClass="profile-pill" fx:id="profileLabel"/>
             <Button text="Logout" onAction="#logout" styleClass="logout-button"/>
         </HBox>
     </top>
@@ -34,13 +34,13 @@
 
             <Label text="Navigation" styleClass="sidebar-title"/>
 
-            <Button text="Dashboard" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Inventory" onAction="#showInventory" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Warehouses" onAction="#showWarehouses" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Requests" onAction="#showRequests" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Dispatch" onAction="#showDispatch" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Reports" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="Users" onAction="#showUsers" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="dashboardButton" text="Dashboard" onAction="#showDashboard" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="inventoryButton" text="Inventory" onAction="#showInventory" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="warehousesButton" text="Warehouses" onAction="#showWarehouses" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="requestsButton" text="Requests" onAction="#showRequests" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="dispatchButton" text="Dispatch" onAction="#showDispatch" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="reportsButton" text="Reports" onAction="#showReports" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="usersButton" text="Users" onAction="#showUsers" maxWidth="Infinity" styleClass="nav-button"/>
 
         </VBox>
     </left>

@@ -7,7 +7,6 @@ import com.relieftrack.repository.InventoryRepository;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service providing inventory management operations backed by an in-memory

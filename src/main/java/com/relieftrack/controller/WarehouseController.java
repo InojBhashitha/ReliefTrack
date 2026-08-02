@@ -1,8 +1,11 @@
 package com.relieftrack.controller;
 
 import com.relieftrack.model.Warehouse;
+import com.relieftrack.service.WarehouseRoutingService;
 import com.relieftrack.service.WarehouseService;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -13,6 +16,7 @@ import java.util.List;
 public class WarehouseController {
 
     private final WarehouseService warehouseService = new WarehouseService();
+    private final WarehouseRoutingService routingService = new WarehouseRoutingService();
 
     @FXML
     private Label summaryLabel;
@@ -30,6 +34,15 @@ public class WarehouseController {
     private TextField addressField;
 
     @FXML
+    private ChoiceBox<Warehouse> sourceChoice;
+
+    @FXML
+    private ChoiceBox<Warehouse> destinationChoice;
+
+    @FXML
+    private Label routeLabel;
+
+    @FXML
     public void initialize() {
         warehouseList.getSelectionModel().selectedItemProperty().addListener((observable, previous, selected) -> populateForm(selected));
         loadWarehouses();
@@ -39,6 +52,8 @@ public class WarehouseController {
         try {
             List<Warehouse> warehouses = warehouseService.findAll();
             warehouseList.getItems().setAll(warehouses);
+            sourceChoice.setItems(FXCollections.observableArrayList(warehouses));
+            destinationChoice.setItems(FXCollections.observableArrayList(warehouses));
             summaryLabel.setText("Warehouses registered: " + warehouses.size());
         } catch (SQLException e) {
             summaryLabel.setText("Unable to load warehouse data.");
@@ -110,6 +125,23 @@ public class WarehouseController {
             summaryLabel.setText("Warehouse deleted successfully.");
         } catch (SQLException e) {
             summaryLabel.setText("Unable to delete a warehouse that is used by inventory or dispatch records.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleFindRoute() {
+        Warehouse source = sourceChoice.getValue();
+        Warehouse destination = destinationChoice.getValue();
+        if (source == null || destination == null) {
+            routeLabel.setText("Select both a source and destination warehouse.");
+            return;
+        }
+        try {
+            String route = routingService.describeRoute(source.getWarehouseId(), destination.getWarehouseId());
+            routeLabel.setText(route.isEmpty() ? "No route found." : route);
+        } catch (SQLException e) {
+            routeLabel.setText("Unable to calculate warehouse route.");
             e.printStackTrace();
         }
     }

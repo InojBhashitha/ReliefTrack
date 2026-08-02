@@ -1,6 +1,7 @@
 package com.relieftrack.controller;
 
 import com.relieftrack.enums.DispatchStatus;
+import com.relieftrack.enums.RequestStatus;
 import com.relieftrack.model.Dispatch;
 import com.relieftrack.model.EmergencyRequest;
 import com.relieftrack.model.Warehouse;
@@ -10,12 +11,13 @@ import com.relieftrack.service.WarehouseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ChoiceBox;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DispatchController {
 
@@ -27,7 +29,7 @@ public class DispatchController {
     private Label summaryLabel;
 
     @FXML
-    private ListView<Dispatch> dispatchList;
+    private ListView<String> dispatchList;
 
     @FXML
     private ChoiceBox<EmergencyRequest> requestChoice;
@@ -41,21 +43,26 @@ public class DispatchController {
     @FXML
     public void initialize() {
         statusChoice.getItems().setAll(DispatchStatus.values());
-        dispatchList.getSelectionModel().selectedItemProperty().addListener((observable, previous, selected) -> populateForm(selected));
         loadDispatches();
     }
 
     private void loadDispatches() {
         try {
             List<Dispatch> dispatches = dispatchService.findAll();
-            ObservableList<Dispatch> items = FXCollections.observableArrayList(dispatches);
+            ObservableList<String> items = FXCollections.observableArrayList(
+                    dispatches.stream()
+                            .map(this::formatDispatch)
+                            .collect(Collectors.toList())
+            );
             dispatchList.setItems(items);
-            requestChoice.getItems().setAll(emergencyRequestService.findAll().stream()
-                    .filter(request -> request.getStatus() == com.relieftrack.enums.RequestStatus.PENDING
-                            || request.getStatus() == com.relieftrack.enums.RequestStatus.APPROVED)
-                    .toList());
+
+            List<EmergencyRequest> pendingRequests = emergencyRequestService.findAll().stream()
+                    .filter(request -> request.getStatus() == RequestStatus.PENDING || request.getStatus() == RequestStatus.APPROVED)
+                    .toList();
+            requestChoice.getItems().setAll(pendingRequests);
             warehouseChoice.getItems().setAll(warehouseService.findAll());
-            summaryLabel.setText("Dispatch records loaded: " + dispatches.size());
+
+            summaryLabel.setText("Dispatch records loaded: " + dispatches.size() + " | Eligible requests: " + pendingRequests.size());
         } catch (SQLException e) {
             summaryLabel.setText("Unable to load dispatch data.");
             e.printStackTrace();
@@ -79,15 +86,21 @@ public class DispatchController {
 
     @FXML
     private void handleUpdateStatus() {
-        Dispatch selected = dispatchList.getSelectionModel().getSelectedItem();
+        String selected = dispatchList.getSelectionModel().getSelectedItem();
         DispatchStatus status = statusChoice.getValue();
         if (selected == null || status == null) {
             summaryLabel.setText("Select a dispatch and a status to update.");
             return;
         }
         try {
-            selected.setStatus(status);
-            dispatchService.update(selected);
+            int dispatchId = extractDispatchId(selected);
+            Dispatch selectedDispatch = dispatchService.findById(dispatchId);
+            if (selectedDispatch == null) {
+                summaryLabel.setText("Selected dispatch could not be found.");
+                return;
+            }
+            selectedDispatch.setStatus(status);
+            dispatchService.update(selectedDispatch);
             loadDispatches();
             clearForm();
             summaryLabel.setText("Dispatch status updated successfully.");
@@ -97,15 +110,24 @@ public class DispatchController {
         }
     }
 
-    private void populateForm(Dispatch dispatch) {
-        if (dispatch == null) return;
-        statusChoice.setValue(dispatch.getStatus());
-    }
-
     private void clearForm() {
-        dispatchList.getSelectionModel().clearSelection();
         requestChoice.setValue(null);
         warehouseChoice.setValue(null);
         statusChoice.setValue(DispatchStatus.PENDING);
+    }
+
+    private String formatDispatch(Dispatch dispatch) {
+        String requestLabel = dispatch.getRequest() != null
+                ? dispatch.getRequest().getOrganization()
+                : "Unknown request";
+        String warehouseLabel = dispatch.getWarehouse() != null
+                ? dispatch.getWarehouse().getName()
+                : "Unknown warehouse";
+        return "#" + dispatch.getDispatchId() + " | " + requestLabel + " | " + warehouseLabel + " | " + dispatch.getStatus();
+    }
+
+    private int extractDispatchId(String formattedValue) {
+        String trimmed = formattedValue.substring(1, formattedValue.indexOf(' '));
+        return Integer.parseInt(trimmed);
     }
 }

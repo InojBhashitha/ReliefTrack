@@ -1,6 +1,7 @@
 package com.relieftrack.controller;
 
 import com.relieftrack.config.AppConfig;
+import com.relieftrack.config.SessionManager;
 import com.relieftrack.model.User;
 import com.relieftrack.service.AuthenticationService;
 import javafx.event.ActionEvent;
@@ -44,6 +45,7 @@ public class LoginController {
             Optional<User> user = authenticationService.authenticate(username, password);
 
             if (user.isPresent()) {
+                SessionManager.login(user.get());
                 statusLabel.setText("Login successful. Opening dashboard...");
                 openDashboard(event);
             } else {
