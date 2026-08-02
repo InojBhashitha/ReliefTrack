@@ -95,8 +95,8 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
                 return new ReliefItem(
                         rs.getInt("item_id"),
                         rs.getString("name"),
-                        Category.valueOf(rs.getString("category")),
-                        LocalDate.parse(rs.getString("expiry_date"))
+                        parseCategory(rs.getString("category")),
+                        parseDate(rs.getString("expiry_date"))
                 );
             }
         }
@@ -122,8 +122,8 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
                 ReliefItem item = new ReliefItem(
                         rs.getInt("item_id"),
                         rs.getString("name"),
-                        Category.valueOf(rs.getString("category")),
-                        LocalDate.parse(rs.getString("expiry_date"))
+                        parseCategory(rs.getString("category")),
+                        parseDate(rs.getString("expiry_date"))
                 );
 
                 items.add(item);
@@ -131,5 +131,27 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
         }
 
         return items;
+    }
+
+    private Category parseCategory(String value) {
+        if (value == null || value.isBlank()) {
+            return Category.OTHER;
+        }
+        try {
+            return Category.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return Category.OTHER;
+        }
+    }
+
+    private LocalDate parseDate(String value) {
+        if (value == null || value.isBlank()) {
+            return LocalDate.now();
+        }
+        try {
+            return LocalDate.parse(value);
+        } catch (Exception e) {
+            return LocalDate.now();
+        }
     }
 }
