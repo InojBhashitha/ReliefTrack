@@ -22,13 +22,19 @@ public class UserRepository extends BaseRepository implements Repository<User> {
         String sql = "INSERT INTO users (username, password_hash, full_name, role) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, entity.getUsername());
             statement.setString(2, entity.getPasswordHash());
             statement.setString(3, entity.getFullName());
             statement.setString(4, entity.getRole().name());
             statement.executeUpdate();
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    entity.setUserId(generatedKeys.getInt(1));
+                }
+            }
 
             userLookupTable.put(entity.getUsername(), entity);
         }
@@ -54,6 +60,11 @@ public class UserRepository extends BaseRepository implements Repository<User> {
 
     @Override
     public void delete(int id) throws SQLException {
+        User user = findById(id);
+        if (user != null) {
+            userLookupTable.remove(user.getUsername());
+        }
+
         String sql = "DELETE FROM users WHERE user_id = ?";
 
         try (Connection connection = getConnection();

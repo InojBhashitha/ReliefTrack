@@ -104,14 +104,6 @@ public class EmergencyRequest {
 
     @Override
     public String toString() {
-        return "EmergencyRequest{" +
-                "requestId=" + requestId +
-                ", organization='" + organization + '\'' +
-                ", disasterType=" + disasterType +
-                ", reliefItem=" + reliefItem.getName() +
-                ", quantity=" + quantity +
-                ", priority=" + priority +
-                ", status=" + status +
-                '}';
+        return organization + " | Disaster: " + disasterType + " | Item: " + reliefItem.getName() + " (Qty: " + quantity + ") | Priority: " + priority + " | Status: " + status;
     }
 }

@@ -83,6 +83,29 @@ public class AVLTree<K extends Comparable<K>, V> {
         return values;
     }
 
+    public List<V> searchPrefix(String prefix) {
+        List<V> results = new ArrayList<>();
+        searchPrefix(root, prefix.toLowerCase().trim(), results);
+        return results;
+    }
+
+    private void searchPrefix(AVLNode<K, V> node, String prefix, List<V> results) {
+        if (node == null) return;
+        String keyStr = node.getKey().toString().toLowerCase().trim();
+        if (keyStr.startsWith(prefix)) {
+            searchPrefix(node.getLeft(), prefix, results);
+            results.add(node.getValue());
+            searchPrefix(node.getRight(), prefix, results);
+        } else {
+            if (keyStr.compareTo(prefix) > 0) {
+                searchPrefix(node.getLeft(), prefix, results);
+            }
+            if (keyStr.compareTo(prefix) < 0) {
+                searchPrefix(node.getRight(), prefix, results);
+            }
+        }
+    }
+
     public List<V> valuesPreOrder() {
         List<V> values = new ArrayList<>();
         preOrder(root, values);

@@ -63,6 +63,8 @@ public class UserController {
         fullNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
+        userTable.getSelectionModel().selectedItemProperty().addListener((observable, previous, selected) -> populateForm(selected));
+
         loadUsers();
     }
 
@@ -97,7 +99,11 @@ public class UserController {
             selected.setUsername(usernameField.getText());
             selected.setFullName(fullNameField.getText());
             selected.setRole(roleChoice.getValue());
-            selected.setPasswordHash(authenticationService.hashPassword(passwordField.getText()));
+            
+            String newPassword = passwordField.getText();
+            if (newPassword != null && !newPassword.isEmpty()) {
+                selected.setPasswordHash(authenticationService.hashPassword(newPassword));
+            }
 
             userService.update(selected);
             loadUsers();
@@ -140,7 +146,16 @@ public class UserController {
         }
     }
 
+    private void populateForm(User user) {
+        if (user == null) return;
+        usernameField.setText(user.getUsername());
+        fullNameField.setText(user.getFullName());
+        roleChoice.setValue(user.getRole());
+        passwordField.clear();
+    }
+
     private void clearForm() {
+        userTable.getSelectionModel().clearSelection();
         usernameField.clear();
         fullNameField.clear();
         passwordField.clear();

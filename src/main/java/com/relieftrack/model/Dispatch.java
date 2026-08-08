@@ -69,11 +69,6 @@ public class Dispatch {
 
     @Override
     public String toString() {
-        return "Dispatch{" +
-                "dispatchId=" + dispatchId +
-                ", warehouse=" + warehouse.getName() +
-                ", requestId=" + request.getRequestId() +
-                ", status=" + status +
-                '}';
+        return "ID: " + dispatchId + " | Warehouse: " + warehouse.getName() + " | Request ID: " + request.getRequestId() + " (Org: " + request.getOrganization() + ") | Status: " + status;
     }
 }

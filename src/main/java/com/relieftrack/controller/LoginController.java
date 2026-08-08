@@ -45,6 +45,7 @@ public class LoginController {
             Optional<User> user = authenticationService.authenticate(username, password);
 
             if (user.isPresent()) {
+                AuthenticationService.setCurrentUser(user.get());
                 SessionManager.login(user.get());
                 statusLabel.setText("Login successful. Opening dashboard...");
                 openDashboard(event);

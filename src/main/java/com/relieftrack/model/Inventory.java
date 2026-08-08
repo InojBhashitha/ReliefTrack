@@ -66,12 +66,6 @@ public class Inventory {
 
     @Override
     public String toString() {
-        return "Inventory{" +
-                "inventoryId=" + inventoryId +
-                ", warehouse=" + warehouse.getName() +
-                ", reliefItem=" + reliefItem.getName() +
-                ", quantity=" + quantity +
-                ", minimumStock=" + minimumStock +
-                '}';
+        return reliefItem.getName() + " | Qty: " + quantity + " | Min Stock: " + minimumStock + " | Warehouse: " + warehouse.getName();
     }
 }
