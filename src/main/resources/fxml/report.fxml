@@ -37,6 +37,14 @@
             <Label text="Dispatches" styleClass="card-label"/>
             <Label fx:id="dispatchStat" text="0" styleClass="card-number"/>
         </VBox>
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Pending" styleClass="card-label"/>
+            <Label fx:id="pendingRequestStat" text="0" styleClass="card-number"/>
+        </VBox>
+        <VBox styleClass="dashboard-card" prefWidth="160">
+            <Label text="Low Stock" styleClass="card-label"/>
+            <Label fx:id="lowStockStat" text="0" styleClass="card-number"/>
+        </VBox>
     </HBox>
 
     <ListView fx:id="reportList" prefHeight="260" styleClass="activity-list"/>

@@ -117,8 +117,8 @@ public class InventoryRepository extends BaseRepository implements Repository<In
         ReliefItem reliefItem = new ReliefItem();
         reliefItem.setItemId(resultSet.getInt("item_id"));
         reliefItem.setName(resultSet.getString("item_name"));
-        reliefItem.setCategory(Category.valueOf(resultSet.getString("category")));
-        reliefItem.setExpiryDate(LocalDate.parse(resultSet.getString("expiry_date")));
+        reliefItem.setCategory(parseCategory(resultSet.getString("category")));
+        reliefItem.setExpiryDate(parseDate(resultSet.getString("expiry_date")));
 
         Inventory inventory = new Inventory();
         inventory.setInventoryId(resultSet.getInt("inventory_id"));
@@ -127,5 +127,27 @@ public class InventoryRepository extends BaseRepository implements Repository<In
         inventory.setQuantity(resultSet.getInt("quantity"));
         inventory.setMinimumStock(resultSet.getInt("minimum_stock"));
         return inventory;
+    }
+
+    private Category parseCategory(String value) {
+        if (value == null || value.isBlank()) {
+            return Category.OTHER;
+        }
+        try {
+            return Category.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return Category.OTHER;
+        }
+    }
+
+    private java.time.LocalDate parseDate(String value) {
+        if (value == null || value.isBlank()) {
+            return java.time.LocalDate.now();
+        }
+        try {
+            return java.time.LocalDate.parse(value);
+        } catch (Exception e) {
+            return java.time.LocalDate.now();
+        }
     }
 }

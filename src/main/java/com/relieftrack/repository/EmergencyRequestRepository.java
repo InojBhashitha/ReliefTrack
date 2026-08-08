@@ -113,18 +113,84 @@ public class EmergencyRequestRepository extends BaseRepository implements Reposi
         ReliefItem reliefItem = new ReliefItem();
         reliefItem.setItemId(resultSet.getInt("item_id"));
         reliefItem.setName(resultSet.getString("item_name"));
-        reliefItem.setCategory(Category.valueOf(resultSet.getString("category")));
-        reliefItem.setExpiryDate(LocalDate.parse(resultSet.getString("expiry_date")));
+        reliefItem.setCategory(parseCategory(resultSet.getString("category")));
+        reliefItem.setExpiryDate(parseDate(resultSet.getString("expiry_date")));
 
         EmergencyRequest request = new EmergencyRequest();
         request.setRequestId(resultSet.getInt("request_id"));
         request.setOrganization(resultSet.getString("organization"));
-        request.setDisasterType(DisasterType.valueOf(resultSet.getString("disaster_type")));
+        request.setDisasterType(parseDisasterType(resultSet.getString("disaster_type")));
         request.setReliefItem(reliefItem);
         request.setQuantity(resultSet.getInt("quantity"));
-        request.setPriority(PriorityLevel.valueOf(resultSet.getString("priority")));
-        request.setStatus(RequestStatus.valueOf(resultSet.getString("status")));
-        request.setRequestDate(LocalDateTime.parse(resultSet.getString("request_date")));
+        request.setPriority(parsePriority(resultSet.getString("priority")));
+        request.setStatus(parseStatus(resultSet.getString("status")));
+        request.setRequestDate(parseDateTime(resultSet.getString("request_date")));
         return request;
+    }
+
+    private Category parseCategory(String value) {
+        if (value == null || value.isBlank()) {
+            return Category.OTHER;
+        }
+        try {
+            return Category.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return Category.OTHER;
+        }
+    }
+
+    private DisasterType parseDisasterType(String value) {
+        if (value == null || value.isBlank()) {
+            return DisasterType.OTHER;
+        }
+        try {
+            return DisasterType.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return DisasterType.OTHER;
+        }
+    }
+
+    private PriorityLevel parsePriority(String value) {
+        if (value == null || value.isBlank()) {
+            return PriorityLevel.MEDIUM;
+        }
+        try {
+            return PriorityLevel.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return PriorityLevel.MEDIUM;
+        }
+    }
+
+    private RequestStatus parseStatus(String value) {
+        if (value == null || value.isBlank()) {
+            return RequestStatus.PENDING;
+        }
+        try {
+            return RequestStatus.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return RequestStatus.PENDING;
+        }
+    }
+
+    private java.time.LocalDate parseDate(String value) {
+        if (value == null || value.isBlank()) {
+            return java.time.LocalDate.now();
+        }
+        try {
+            return java.time.LocalDate.parse(value);
+        } catch (Exception e) {
+            return java.time.LocalDate.now();
+        }
+    }
+
+    private java.time.LocalDateTime parseDateTime(String value) {
+        if (value == null || value.isBlank()) {
+            return java.time.LocalDateTime.now();
+        }
+        try {
+            return java.time.LocalDateTime.parse(value);
+        } catch (Exception e) {
+            return java.time.LocalDateTime.now();
+        }
     }
 }

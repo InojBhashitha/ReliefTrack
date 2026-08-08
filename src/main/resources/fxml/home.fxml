@@ -18,7 +18,7 @@
     </padding>
 
     <VBox spacing="4" styleClass="page-header">
-        <Label text="Admin Dashboard" styleClass="page-title"/>
+        <Label fx:id="pageTitle" text="Operations Dashboard" styleClass="page-title"/>
         <Label text="Monitor relief operations, stock readiness, and dispatch progress in one place."
                styleClass="subtitle-text"/>
     </VBox>
@@ -27,26 +27,26 @@
 
         <VBox styleClass="dashboard-card">
             <Label text="Inventory Items" styleClass="card-label"/>
-            <Label text="245" styleClass="card-number"/>
-            <Label text="+12 this week" styleClass="small-text"/>
+            <Label fx:id="inventoryCountLabel" text="0" styleClass="card-number"/>
+            <Label text="Tracked in the system" styleClass="small-text"/>
         </VBox>
 
         <VBox styleClass="dashboard-card">
             <Label text="Open Requests" styleClass="card-label"/>
-            <Label text="17" styleClass="card-number"/>
-            <Label text="6 high priority" styleClass="small-text"/>
+            <Label fx:id="openRequestCountLabel" text="0" styleClass="card-number"/>
+            <Label text="Pending or approved" styleClass="small-text"/>
         </VBox>
 
         <VBox styleClass="dashboard-card">
             <Label text="Warehouses" styleClass="card-label"/>
-            <Label text="8" styleClass="card-number"/>
-            <Label text="2 under review" styleClass="small-text"/>
+            <Label fx:id="warehouseCountLabel" text="0" styleClass="card-number"/>
+            <Label text="Operational depots" styleClass="small-text"/>
         </VBox>
 
         <VBox styleClass="dashboard-card">
             <Label text="Dispatch Rate" styleClass="card-label"/>
-            <Label text="92%" styleClass="card-number"/>
-            <Label text="On schedule" styleClass="small-text"/>
+            <Label fx:id="dispatchRateLabel" text="0%" styleClass="card-number"/>
+            <Label text="Against recorded requests" styleClass="small-text"/>
         </VBox>
 
     </HBox>
@@ -61,12 +61,12 @@
         <VBox styleClass="panel" GridPane.columnIndex="0" GridPane.rowIndex="0">
             <Label text="Open Requests" styleClass="section-title"/>
 
-            <TableView prefHeight="250" styleClass="data-table">
+            <TableView fx:id="requestTable" prefHeight="250" styleClass="data-table">
                 <columns>
-                    <TableColumn text="ID" prefWidth="70"/>
-                    <TableColumn text="Location" prefWidth="120"/>
-                    <TableColumn text="Priority" prefWidth="100"/>
-                    <TableColumn text="Status" prefWidth="120"/>
+                    <TableColumn fx:id="requestIdColumn" text="ID" prefWidth="70"/>
+                    <TableColumn fx:id="requestOrganizationColumn" text="Organization" prefWidth="140"/>
+                    <TableColumn fx:id="requestPriorityColumn" text="Priority" prefWidth="100"/>
+                    <TableColumn fx:id="requestStatusColumn" text="Status" prefWidth="120"/>
                 </columns>
             </TableView>
         </VBox>
@@ -74,16 +74,7 @@
         <VBox styleClass="panel" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
             <Label text="Critical Alerts" styleClass="section-title"/>
 
-            <ListView prefHeight="250" styleClass="activity-list">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Water shortage in North District"/>
-                        <String fx:value="Warehouse #4 temperature check pending"/>
-                        <String fx:value="2 emergency dispatches awaiting approval"/>
-                        <String fx:value="Food supply low in coastal zone"/>
-                    </FXCollections>
-                </items>
-            </ListView>
+            <ListView fx:id="alertsList" prefHeight="250" styleClass="activity-list"/>
         </VBox>
 
         <VBox styleClass="panel" spacing="14" GridPane.columnIndex="0" GridPane.rowIndex="1">

@@ -14,17 +14,25 @@
     </padding>
 
     <Label text="Warehouses" styleClass="page-title"/>
-    <Label text="Manage storage location status, capacity, and distribution readiness." styleClass="subtitle-text"/>
+    <Label text="Manage warehouses and calculate shortest transfer routes between depots." styleClass="subtitle-text"/>
     <Label fx:id="summaryLabel" text="Loading warehouse data..." styleClass="card-label"/>
 
     <HBox spacing="12">
-        <TextField fx:id="nameField" promptText="Warehouse name" HBox.hgrow="ALWAYS"/>
-        <TextField fx:id="districtField" promptText="District" prefWidth="160"/>
-        <TextField fx:id="addressField" promptText="Address" HBox.hgrow="ALWAYS"/>
-        <Button text="Add Warehouse" onAction="#handleAddWarehouse" styleClass="quick-action"/>
+        <TextField fx:id="nameField" promptText="Warehouse name" prefWidth="180"/>
+        <TextField fx:id="districtField" promptText="District" prefWidth="180"/>
+        <TextField fx:id="addressField" promptText="Address" prefWidth="260"/>
+        <Button text="Add" onAction="#handleAddWarehouse" styleClass="quick-action"/>
         <Button text="Update" onAction="#handleUpdateWarehouse" styleClass="quick-action"/>
         <Button text="Delete" onAction="#handleDeleteWarehouse" styleClass="quick-action"/>
     </HBox>
+
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <ChoiceBox fx:id="sourceChoice" prefWidth="220"/>
+        <ChoiceBox fx:id="destinationChoice" prefWidth="220"/>
+        <Button text="Find Route" onAction="#handleFindRoute" styleClass="quick-action"/>
+    </HBox>
+
+    <Label fx:id="routeLabel" text="Select two warehouses to calculate the shortest route." styleClass="status-text" wrapText="true"/>
 
     <ListView fx:id="warehouseList" prefHeight="280" styleClass="activity-list"/>
 </VBox>
