@@ -3,6 +3,7 @@ package com.relieftrack.controller;
 import java.io.IOException;
 
 import com.relieftrack.config.AppConfig;
+import com.relieftrack.service.AuthenticationService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -71,6 +72,7 @@ public class DashboardController {
     @FXML
     private void logout() {
         try {
+            AuthenticationService.clearSession();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.LOGIN_FXML));
             Scene scene = new Scene(loader.load(), AppConfig.WINDOW_WIDTH, AppConfig.WINDOW_HEIGHT);
 

@@ -13,6 +13,12 @@ import java.util.HexFormat;
 public class DatabaseInitializer {
 
     public static void initializeDatabase() {
+        // Ensure data directory exists to avoid SQLITE_CANTOPEN
+        java.io.File dbFolder = new java.io.File(DatabaseConfig.DATABASE_FOLDER);
+        if (!dbFolder.exists()) {
+            dbFolder.mkdirs();
+        }
+
         try (Connection connection = DatabaseManager.getConnection();
              Statement statement = connection.createStatement()) {
 
