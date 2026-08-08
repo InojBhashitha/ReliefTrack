@@ -22,9 +22,24 @@ class InventoryServiceTest {
         System.setProperty("relieftrack.database.url", "jdbc:sqlite:" + tempDir.resolve("inventory-test.db"));
         DatabaseInitializer.initializeDatabase();
 
+        // Clear seeded demo data for clean test execution
+        try (java.sql.Connection conn = com.relieftrack.database.DatabaseManager.getConnection();
+             java.sql.Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM inventory");
+            stmt.execute("DELETE FROM relief_items");
+            stmt.execute("DELETE FROM warehouses");
+        }
+
         WarehouseService warehouseService = new WarehouseService();
         Warehouse warehouse = new Warehouse(0, "Test Warehouse", "Colombo", "123 Street");
         warehouseService.save(warehouse);
+        try (java.sql.Connection conn = com.relieftrack.database.DatabaseManager.getConnection();
+             java.sql.Statement stmt = conn.createStatement();
+             java.sql.ResultSet rs = stmt.executeQuery("SELECT MAX(warehouse_id) FROM warehouses")) {
+            if (rs.next()) {
+                warehouse.setWarehouseId(rs.getInt(1));
+            }
+        }
 
         ReliefItemService itemService = new ReliefItemService();
         ReliefItem item1 = new ReliefItem(0, "Water Pack", Category.WATER, LocalDate.now().plusDays(10));
@@ -38,6 +53,7 @@ class InventoryServiceTest {
 
         inventoryService.save(inv1);
         inventoryService.save(inv2);
+
 
         // Search "water" should find "Water Pack"
         List<Inventory> results = inventoryService.search("water");

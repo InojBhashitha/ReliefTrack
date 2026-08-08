@@ -88,28 +88,15 @@ public class ReliefItemRepository extends BaseRepository implements Repository<R
 
             statement.setInt(1, id);
 
-<<<<<<< HEAD
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return new ReliefItem(
                             rs.getInt("item_id"),
                             rs.getString("name"),
-                            Category.valueOf(rs.getString("category")),
-                            LocalDate.parse(rs.getString("expiry_date"))
+                            parseCategory(rs.getString("category")),
+                            parseDate(rs.getString("expiry_date"))
                     );
                 }
-=======
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-
-                return new ReliefItem(
-                        rs.getInt("item_id"),
-                        rs.getString("name"),
-                        parseCategory(rs.getString("category")),
-                        parseDate(rs.getString("expiry_date"))
-                );
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
             }
         }
 

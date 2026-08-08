@@ -1,30 +1,19 @@
 package com.relieftrack.controller;
 
-<<<<<<< HEAD
 import java.io.IOException;
 
 import com.relieftrack.config.AppConfig;
-import com.relieftrack.service.AuthenticationService;
-=======
-import com.relieftrack.config.AppConfig;
 import com.relieftrack.config.SessionManager;
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
+import com.relieftrack.service.AuthenticationService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-<<<<<<< HEAD
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-=======
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
 
 public class DashboardController {
 
@@ -128,20 +117,7 @@ public class DashboardController {
 
     @FXML
     private void logout() {
-<<<<<<< HEAD
-        try {
-            AuthenticationService.clearSession();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.LOGIN_FXML));
-            Scene scene = new Scene(loader.load(), AppConfig.WINDOW_WIDTH, AppConfig.WINDOW_HEIGHT);
-
-            Stage stage = (Stage) contentPane.getScene().getWindow();
-            stage.setTitle(AppConfig.APP_TITLE);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-=======
+        AuthenticationService.clearSession();
         SessionManager.logout();
         redirectToLogin();
     }
@@ -171,6 +147,5 @@ public class DashboardController {
         alert.setHeaderText("You do not have permission to manage users.");
         alert.setContentText("Please contact an administrator.");
         alert.showAndWait();
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
     }
 }

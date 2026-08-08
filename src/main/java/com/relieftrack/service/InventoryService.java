@@ -15,26 +15,6 @@ import java.util.List;
 public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
-<<<<<<< HEAD
-    private AVLTree<String, Inventory> inventoryTree = new AVLTree<>();
-
-    public InventoryService() {
-        this.inventoryRepository = new InventoryRepository();
-        try {
-            preloadInventoryTree();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void preloadInventoryTree() throws SQLException {
-        inventoryTree = new AVLTree<>();
-        List<Inventory> inventories = inventoryRepository.findAll();
-        for (Inventory inv : inventories) {
-            if (inv.getReliefItem() != null && inv.getReliefItem().getName() != null) {
-                inventoryTree.put(inv.getReliefItem().getName().toLowerCase().trim(), inv);
-            }
-=======
     private final AVLTree<Integer, Inventory> inventoryByIdTree;
     private final AVLTree<String, Inventory> inventoryByNameTree;
 
@@ -42,12 +22,22 @@ public class InventoryService {
         this.inventoryRepository = new InventoryRepository();
         this.inventoryByIdTree = new AVLTree<>();
         this.inventoryByNameTree = new AVLTree<>();
+        try {
+            syncFromDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public InventoryService(InventoryRepository repository) {
         this.inventoryRepository = repository;
         this.inventoryByIdTree = new AVLTree<>();
         this.inventoryByNameTree = new AVLTree<>();
+        try {
+            syncFromDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Ensures the in-memory AVL Trees are synchronized with the database. */
@@ -75,41 +65,21 @@ public class InventoryService {
         if (inventory.getReliefItem() != null && inventory.getReliefItem().getName() != null) {
             String key = inventory.getReliefItem().getName().toLowerCase() + "#" + inventory.getInventoryId();
             inventoryByNameTree.remove(key);
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
         }
     }
 
     public void save(Inventory inventory) throws SQLException {
         inventoryRepository.save(inventory);
-<<<<<<< HEAD
-        if (inventory.getReliefItem() != null && inventory.getReliefItem().getName() != null) {
-            inventoryTree.put(inventory.getReliefItem().getName().toLowerCase().trim(), inventory);
-        }
-=======
         syncFromDatabase();
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
     }
 
     public void update(Inventory inventory) throws SQLException {
         inventoryRepository.update(inventory);
-<<<<<<< HEAD
-        if (inventory.getReliefItem() != null && inventory.getReliefItem().getName() != null) {
-            inventoryTree.put(inventory.getReliefItem().getName().toLowerCase().trim(), inventory);
-        }
-    }
-
-    public void delete(int id) throws SQLException {
-        Inventory inventory = findById(id);
-        if (inventory != null && inventory.getReliefItem() != null && inventory.getReliefItem().getName() != null) {
-            inventoryTree.remove(inventory.getReliefItem().getName().toLowerCase().trim());
-        }
-=======
         syncFromDatabase();
     }
 
     public void delete(int id) throws SQLException {
         Inventory existing = inventoryRepository.findById(id);
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
         inventoryRepository.delete(id);
         if (existing != null) {
             removeFromIndex(existing);
@@ -169,8 +139,8 @@ public class InventoryService {
 
     public List<Inventory> search(String query) {
         if (query == null || query.trim().isEmpty()) {
-            return inventoryTree.valuesInOrder();
+            return inventoryByNameTree.valuesInOrder();
         }
-        return inventoryTree.searchPrefix(query.toLowerCase().trim());
+        return inventoryByNameTree.searchPrefix(query.toLowerCase().trim());
     }
 }

@@ -83,7 +83,6 @@ public class AVLTree<K extends Comparable<K>, V> {
         return values;
     }
 
-<<<<<<< HEAD
     public List<V> searchPrefix(String prefix) {
         List<V> results = new ArrayList<>();
         searchPrefix(root, prefix.toLowerCase().trim(), results);
@@ -105,7 +104,8 @@ public class AVLTree<K extends Comparable<K>, V> {
                 searchPrefix(node.getRight(), prefix, results);
             }
         }
-=======
+    }
+
     public List<V> valuesPreOrder() {
         List<V> values = new ArrayList<>();
         preOrder(root, values);
@@ -138,7 +138,6 @@ public class AVLTree<K extends Comparable<K>, V> {
         int bf = getBalanceFactor(node);
         if (Math.abs(bf) > 1) return false;
         return checkBalance(node.getLeft()) && checkBalance(node.getRight());
->>>>>>> 2afd4e71317da30b0e88e536c5d15bf64fec63dd
     }
 
     private AVLNode<K, V> insert(AVLNode<K, V> node, K key, V value) {
