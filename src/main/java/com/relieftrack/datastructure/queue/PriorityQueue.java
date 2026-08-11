@@ -29,6 +29,9 @@ public class PriorityQueue {
 
     // Convert enum priority into integer
     private int getPriorityValue(PriorityLevel priority) {
+        if (priority == null) {
+            return 0;
+        }
         switch (priority) {
             case CRITICAL:
                 return 4;
@@ -45,6 +48,9 @@ public class PriorityQueue {
 
     // Insert request according to priority
     public void enqueue(EmergencyRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Cannot enqueue a null request.");
+        }
 
         PriorityQueueNode newNode = new PriorityQueueNode(request);
 
