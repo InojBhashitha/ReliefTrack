@@ -213,5 +213,55 @@ public class GraphTest {
             graph.getEdges(v1).add(new Edge(v1, v2, 20.0));
         });
     }
+
+    @Test
+    public void testVertexIdIsAssignedDuringConstruction() {
+        Vertex v = new Vertex("V1", "Location A");
+        assertEquals("V1", v.getId());
+        assertEquals("Location A", v.getName());
+    }
+
+    @Test
+    public void testVertexIdFieldIsFinal() throws NoSuchFieldException {
+        java.lang.reflect.Field idField = Vertex.class.getDeclaredField("id");
+        assertTrue(java.lang.reflect.Modifier.isFinal(idField.getModifiers()),
+                "Vertex.id field should be declared final.");
+    }
+
+    @Test
+    public void testVertexHasNoSetIdMethod() {
+        try {
+            Vertex.class.getMethod("setId", String.class);
+            fail("Vertex should not have a public setId method.");
+        } catch (NoSuchMethodException expected) {
+            // expected — setId should not exist
+        }
+    }
+
+    @Test
+    public void testVertexNameRemainsModifiable() {
+        Vertex v = new Vertex("V1", "Old Name");
+        v.setName("New Name");
+        assertEquals("New Name", v.getName());
+        assertEquals("V1", v.getId());
+    }
+
+    @Test
+    public void testGraphLookupWorksWithImmutableVertexId() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+        graph.addEdge(v1, v2, 100.0);
+
+        // Lookup by equal vertex object
+        Vertex lookup = new Vertex("W1", "Colombo");
+        List<Edge> edges = graph.getEdges(lookup);
+        assertEquals(1, edges.size());
+        assertEquals(v2, edges.get(0).getDestination());
+
+        // Verify graph contains both vertices
+        assertTrue(graph.getVertices().contains(v1));
+        assertTrue(graph.getVertices().contains(lookup));
+    }
 }
 

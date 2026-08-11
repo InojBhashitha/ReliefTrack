@@ -1,7 +1,7 @@
 package com.relieftrack.datastructure.graph;
 
 public class Vertex {
-    private String id;
+    private final String id;
     private String name;
 
     public Vertex(String id, String name) {
@@ -11,10 +11,6 @@ public class Vertex {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
