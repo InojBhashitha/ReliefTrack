@@ -25,7 +25,7 @@ class DispatchServiceTest {
         DispatchService dispatchService = new DispatchService();
 
         EmergencyRequest request = requestService.findAll().stream()
-                .filter(candidate -> candidate.getStatus() == RequestStatus.PENDING)
+                .filter(candidate -> candidate.getStatus() == RequestStatus.APPROVED)
                 .findFirst().orElseThrow();
         Warehouse warehouse = warehouseService.findAll().get(0);
         Inventory inventoryBefore = inventoryService.findAll().stream()

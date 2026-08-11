@@ -137,4 +137,49 @@ class AVLTreeTest {
         assertTrue(tree.getMaxKey().isEmpty());
         assertTrue(tree.isBalanced());
     }
+
+    @Test
+    void testRangeSearchWithNullBounds() {
+        tree.put(10, "10");
+        tree.put(20, "20");
+        tree.put(30, "30");
+        tree.put(40, "40");
+        tree.put(50, "50");
+
+        // Full range
+        assertEquals(List.of("10", "20", "30", "40", "50"), tree.rangeSearch(null, null));
+
+        // Lower bound only
+        assertEquals(List.of("30", "40", "50"), tree.rangeSearch(30, null));
+
+        // Upper bound only
+        assertEquals(List.of("10", "20", "30"), tree.rangeSearch(null, 30));
+    }
+
+    @Test
+    void testNullValueHandling() {
+        // Insert key with null value
+        tree.put(10, null);
+        tree.put(20, "twenty");
+
+        // containsKey should work even if value is null
+        assertTrue(tree.containsKey(10));
+        assertTrue(tree.containsKey(20));
+        assertFalse(tree.containsKey(30));
+
+        // get should return Optional.empty() for null value
+        assertTrue(tree.get(10).isEmpty());
+        assertEquals("twenty", tree.get(20).orElseThrow());
+
+        // remove should work for null value
+        assertTrue(tree.remove(10).isEmpty());
+        assertFalse(tree.containsKey(10));
+        assertEquals(1, tree.size());
+
+        // Re-add and remove to verify behavior
+        tree.put(10, null);
+        assertTrue(tree.containsKey(10));
+        tree.put(10, "ten"); // Update with non-null
+        assertEquals("ten", tree.get(10).orElseThrow());
+    }
 }

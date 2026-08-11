@@ -28,11 +28,21 @@ public class Graph {
         if (source == null || destination == null) {
             return;
         }
+        if (weight < 0) {
+            throw new IllegalArgumentException("Edge weight cannot be negative: " + weight);
+        }
         addVertex(source);
         addVertex(destination);
         
+        List<Edge> edges = adjacencyList.get(source);
+        for (Edge edge : edges) {
+            if (edge.getDestination().equals(destination)) {
+                throw new IllegalArgumentException("Edge already exists between " + source.getName() + " and " + destination.getName());
+            }
+        }
+        
         Edge edge = new Edge(source, destination, weight);
-        adjacencyList.get(source).add(edge);
+        edges.add(edge);
     }
 
     public void addUndirectedEdge(Vertex source, Vertex destination, double weight) {
@@ -41,15 +51,20 @@ public class Graph {
     }
 
     public List<Edge> getEdges(Vertex vertex) {
-        return adjacencyList.getOrDefault(vertex, Collections.emptyList());
+        List<Edge> edges = adjacencyList.get(vertex);
+        return edges == null ? Collections.emptyList() : Collections.unmodifiableList(edges);
     }
 
     public Set<Vertex> getVertices() {
-        return adjacencyList.keySet();
+        return Collections.unmodifiableSet(adjacencyList.keySet());
     }
 
     public Map<Vertex, List<Edge>> getAdjacencyList() {
-        return adjacencyList;
+        Map<Vertex, List<Edge>> copy = new HashMap<>();
+        for (Map.Entry<Vertex, List<Edge>> entry : adjacencyList.entrySet()) {
+            copy.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
+        }
+        return Collections.unmodifiableMap(copy);
     }
 
     public List<Vertex> bfs(Vertex start) {

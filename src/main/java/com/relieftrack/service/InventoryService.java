@@ -137,7 +137,8 @@ public class InventoryService {
         return inventoryByNameTree;
     }
 
-    public List<Inventory> search(String query) {
+    public List<Inventory> search(String query) throws SQLException {
+        syncFromDatabase();
         if (query == null || query.trim().isEmpty()) {
             return inventoryByNameTree.valuesInOrder();
         }

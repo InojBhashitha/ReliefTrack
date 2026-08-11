@@ -42,6 +42,14 @@ public class UserRepository extends BaseRepository implements Repository<User> {
 
     @Override
     public void update(User entity) throws SQLException {
+        // Look up the current username in the DB before applying the update,
+        // so we can evict the old cache entry if the username changes.
+        String oldUsername = null;
+        User existingUser = findById(entity.getUserId());
+        if (existingUser != null) {
+            oldUsername = existingUser.getUsername();
+        }
+
         String sql = "UPDATE users SET username = ?, password_hash = ?, full_name = ?, role = ? WHERE user_id = ?";
 
         try (Connection connection = getConnection();
@@ -54,6 +62,10 @@ public class UserRepository extends BaseRepository implements Repository<User> {
             statement.setInt(5, entity.getUserId());
             statement.executeUpdate();
 
+            // If the username changed, remove the stale old-username cache entry.
+            if (oldUsername != null && !oldUsername.equals(entity.getUsername())) {
+                userLookupTable.remove(oldUsername);
+            }
             userLookupTable.put(entity.getUsername(), entity);
         }
     }
