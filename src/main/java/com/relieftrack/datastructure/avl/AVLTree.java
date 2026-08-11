@@ -27,27 +27,33 @@ public class AVLTree<K extends Comparable<K>, V> {
         root = insert(root, key, value);
     }
 
-    public Optional<V> get(K key) {
-        if (key == null) return Optional.empty();
+    private AVLNode<K, V> getNode(K key) {
+        if (key == null) return null;
         AVLNode<K, V> node = root;
         while (node != null) {
             int comparison = key.compareTo(node.getKey());
-            if (comparison == 0) return Optional.ofNullable(node.getValue());
+            if (comparison == 0) return node;
             node = comparison < 0 ? node.getLeft() : node.getRight();
         }
-        return Optional.empty();
+        return null;
+    }
+
+    public Optional<V> get(K key) {
+        AVLNode<K, V> node = getNode(key);
+        return node == null ? Optional.empty() : Optional.ofNullable(node.getValue());
     }
 
     public boolean containsKey(K key) {
-        return get(key).isPresent();
+        return getNode(key) != null;
     }
 
     public Optional<V> remove(K key) {
-        Optional<V> removed = get(key);
-        if (removed.isPresent()) {
+        AVLNode<K, V> node = getNode(key);
+        if (node != null) {
             root = delete(root, key);
+            return Optional.ofNullable(node.getValue());
         }
-        return removed;
+        return Optional.empty();
     }
 
     public int size() {
@@ -224,7 +230,7 @@ public class AVLTree<K extends Comparable<K>, V> {
     private void rangeSearchHelper(AVLNode<K, V> node, K minKey, K maxKey, List<V> result) {
         if (node == null) return;
 
-        if (minKey != null && minKey.compareTo(node.getKey()) < 0) {
+        if (minKey == null || minKey.compareTo(node.getKey()) < 0) {
             rangeSearchHelper(node.getLeft(), minKey, maxKey, result);
         }
 
@@ -234,7 +240,7 @@ public class AVLTree<K extends Comparable<K>, V> {
             result.add(node.getValue());
         }
 
-        if (maxKey != null && maxKey.compareTo(node.getKey()) > 0) {
+        if (maxKey == null || maxKey.compareTo(node.getKey()) > 0) {
             rangeSearchHelper(node.getRight(), minKey, maxKey, result);
         }
     }
