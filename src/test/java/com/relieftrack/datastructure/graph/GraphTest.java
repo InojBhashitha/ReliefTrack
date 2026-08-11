@@ -138,5 +138,80 @@ public class GraphTest {
         List<Vertex> unreachablePath = graph.getShortestPath(colombo, jaffna);
         assertTrue(unreachablePath.isEmpty());
     }
+
+    @Test
+    public void testNegativeEdgeWeightRejected() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            graph.addEdge(v1, v2, -5.0);
+        });
+        assertTrue(exception.getMessage().contains("negative"));
+        assertTrue(graph.getEdges(v1).isEmpty());
+    }
+
+    @Test
+    public void testDuplicateEdgeRejected() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+
+        graph.addEdge(v1, v2, 10.0);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            graph.addEdge(v1, v2, 15.0);
+        });
+        assertTrue(exception.getMessage().contains("already exists"));
+        assertEquals(1, graph.getEdges(v1).size());
+    }
+
+    @Test
+    public void testGetVerticesIsUnmodifiable() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        graph.addVertex(v1);
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getVertices().add(new Vertex("W2", "Kandy"));
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getVertices().remove(v1);
+        });
+    }
+
+    @Test
+    public void testGetAdjacencyListIsUnmodifiable() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+        graph.addEdge(v1, v2, 10.0);
+
+        // Cannot modify the map
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getAdjacencyList().remove(v1);
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getAdjacencyList().put(new Vertex("W3", "Galle"), List.of());
+        });
+
+        // Cannot modify the lists inside the map
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getAdjacencyList().get(v1).add(new Edge(v1, v2, 20.0));
+        });
+    }
+
+    @Test
+    public void testGetEdgesIsUnmodifiable() {
+        Graph graph = new Graph();
+        Vertex v1 = new Vertex("W1", "Colombo");
+        Vertex v2 = new Vertex("W2", "Kandy");
+        graph.addEdge(v1, v2, 10.0);
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            graph.getEdges(v1).add(new Edge(v1, v2, 20.0));
+        });
+    }
 }
 
