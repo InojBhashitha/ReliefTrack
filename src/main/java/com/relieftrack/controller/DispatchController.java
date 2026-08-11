@@ -1,7 +1,6 @@
 package com.relieftrack.controller;
 
 import com.relieftrack.enums.DispatchStatus;
-import com.relieftrack.enums.RequestStatus;
 import com.relieftrack.model.Dispatch;
 import com.relieftrack.model.EmergencyRequest;
 import com.relieftrack.model.Warehouse;
@@ -43,26 +42,37 @@ public class DispatchController {
     @FXML
     public void initialize() {
         statusChoice.getItems().setAll(DispatchStatus.values());
+        statusChoice.setValue(DispatchStatus.PENDING);
         loadDispatches();
     }
 
     private void loadDispatches() {
         try {
             List<Dispatch> dispatches = dispatchService.findAll();
+
             ObservableList<String> items = FXCollections.observableArrayList(
                     dispatches.stream()
-                            .map(this::formatDispatch)
-                            .collect(Collectors.toList())
+                            .map(this::formatDispatch)                .collect(Collectors.toList())
             );
             dispatchList.setItems(items);
 
-            List<EmergencyRequest> pendingRequests = emergencyRequestService.findAll().stream()
-                    .filter(request -> request.getStatus() == RequestStatus.PENDING || request.getStatus() == RequestStatus.APPROVED)
-                    .toList();
+            // Load requests using Priority Queue (highest priority first)
+                            
+            List<EmergencyRequest> pendingRequests =
+                    emergencyRequestService.prioritizePendingRequests(
+                            emergencyRequestService.findAll());
+
             requestChoice.getItems().setAll(pendingRequests);
+                    
+
             warehouseChoice.getItems().setAll(warehouseService.findAll());
 
-            summaryLabel.setText("Dispatch records loaded: " + dispatches.size() + " | Eligible requests: " + pendingRequests.size());
+            summaryLabel.setText(
+                    "Dispatch records loaded: "
+                            + dispatches.size()
+                            + " | Pending requests: "
+                            + pendingRequests.size());
+
         } catch (SQLException e) {
             summaryLabel.setText("Unable to load dispatch data.");
             e.printStackTrace();
@@ -72,14 +82,21 @@ public class DispatchController {
     @FXML
     private void handleAddDispatch() {
         try {
-            dispatchService.scheduleDispatch(requestChoice.getValue(), warehouseChoice.getValue());
+            dispatchService.scheduleDispatch(
+                    requestChoice.getValue(),
+                    warehouseChoice.getValue());
+
             loadDispatches();
             clearForm();
-            summaryLabel.setText("Dispatch scheduled and inventory reserved successfully.");
+
+            summaryLabel.setText(
+                    "Dispatch scheduled and inventory reserved successfully.");
+
         } catch (IllegalArgumentException | IllegalStateException e) {
             summaryLabel.setText(e.getMessage());
         } catch (SQLException e) {
-            summaryLabel.setText("Unable to schedule dispatch. No changes were saved.");
+            summaryLabel.setText(
+                    "Unable to schedule dispatch. No changes were saved.");
             e.printStackTrace();
         }
     }
@@ -88,46 +105,77 @@ public class DispatchController {
     private void handleUpdateStatus() {
         String selected = dispatchList.getSelectionModel().getSelectedItem();
         DispatchStatus status = statusChoice.getValue();
+
         if (selected == null || status == null) {
-            summaryLabel.setText("Select a dispatch and a status to update.");
+            summaryLabel.setText(
+                    "Select a dispatch and a status to update.");
             return;
         }
+
         try {
             int dispatchId = extractDispatchId(selected);
-            Dispatch selectedDispatch = dispatchService.findById(dispatchId);
+
+            Dispatch selectedDispatch =
+                    dispatchService.findById(dispatchId);
+
             if (selectedDispatch == null) {
-                summaryLabel.setText("Selected dispatch could not be found.");
+                summaryLabel.setText(
+                        "Selected dispatch could not be found.");
                 return;
             }
+
             selectedDispatch.setStatus(status);
+                
             dispatchService.update(selectedDispatch);
+
             loadDispatches();
             clearForm();
-            summaryLabel.setText("Dispatch status updated successfully.");
+
+            summaryLabel.setText(
+                    "Dispatch status updated successfully.");
+
         } catch (SQLException e) {
-            summaryLabel.setText("Unable to update dispatch status.");
+            summaryLabel.setText(
+                    "Unable to update dispatch status.");
             e.printStackTrace();
         }
     }
 
     private void clearForm() {
+        dispatchList.getSelectionModel().clearSelection();
         requestChoice.setValue(null);
         warehouseChoice.setValue(null);
         statusChoice.setValue(DispatchStatus.PENDING);
     }
 
     private String formatDispatch(Dispatch dispatch) {
-        String requestLabel = dispatch.getRequest() != null
-                ? dispatch.getRequest().getOrganization()
-                : "Unknown request";
-        String warehouseLabel = dispatch.getWarehouse() != null
-                ? dispatch.getWarehouse().getName()
-                : "Unknown warehouse";
-        return "#" + dispatch.getDispatchId() + " | " + requestLabel + " | " + warehouseLabel + " | " + dispatch.getStatus();
+
+        String requestLabel =
+                dispatch.getRequest() != null
+                        ? dispatch.getRequest().getOrganization()
+                        : "Unknown request";
+
+        String warehouseLabel =
+                dispatch.getWarehouse() != null
+                        ? dispatch.getWarehouse().getName()
+                        : "Unknown warehouse";
+
+        return "#"
+                + dispatch.getDispatchId()
+                + " | "
+                + requestLabel
+                + " | "
+                + warehouseLabel
+                + " | "
+                + dispatch.getStatus();
     }
 
     private int extractDispatchId(String formattedValue) {
-        String trimmed = formattedValue.substring(1, formattedValue.indexOf(' '));
+        String trimmed =
+                formattedValue.substring(
+                        1,
+                        formattedValue.indexOf(' '));
+
         return Integer.parseInt(trimmed);
     }
 }
