@@ -150,77 +150,125 @@ public class DatabaseInitializer {
             }
         }
 
-        try (PreparedStatement warehouseInsert = connection.prepareStatement("INSERT INTO warehouses (name, district, address) VALUES (?, ?, ?)")) {
-            warehouseInsert.setString(1, "Central Hub");
-            warehouseInsert.setString(2, "North District");
-            warehouseInsert.setString(3, "12 Relief Avenue");
-            warehouseInsert.executeUpdate();
+        boolean originalAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try {
+            // --- Warehouses ---
+            int centralHubId;
+            int coastalDepotId;
+            try (PreparedStatement warehouseInsert = connection.prepareStatement(
+                    "INSERT INTO warehouses (name, district, address) VALUES (?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
 
-            warehouseInsert.setString(1, "Coastal Depot");
-            warehouseInsert.setString(2, "Coastal Zone");
-            warehouseInsert.setString(3, "8 Harbor Road");
-            warehouseInsert.executeUpdate();
+                warehouseInsert.setString(1, "Central Hub");
+                warehouseInsert.setString(2, "North District");
+                warehouseInsert.setString(3, "12 Relief Avenue");
+                warehouseInsert.executeUpdate();
+                centralHubId = getGeneratedId(warehouseInsert);
+
+                warehouseInsert.setString(1, "Coastal Depot");
+                warehouseInsert.setString(2, "Coastal Zone");
+                warehouseInsert.setString(3, "8 Harbor Road");
+                warehouseInsert.executeUpdate();
+                coastalDepotId = getGeneratedId(warehouseInsert);
+            }
+
+            // --- Relief Items ---
+            int waterPackId;
+            int medicalKitId;
+            try (PreparedStatement itemInsert = connection.prepareStatement(
+                    "INSERT INTO relief_items (name, category, expiry_date) VALUES (?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
+
+                itemInsert.setString(1, "Water Pack");
+                itemInsert.setString(2, "WATER");
+                itemInsert.setString(3, "2027-12-31");
+                itemInsert.executeUpdate();
+                waterPackId = getGeneratedId(itemInsert);
+
+                itemInsert.setString(1, "Medical Kit");
+                itemInsert.setString(2, "MEDICINE");
+                itemInsert.setString(3, "2027-11-15");
+                itemInsert.executeUpdate();
+                medicalKitId = getGeneratedId(itemInsert);
+            }
+
+            // --- Inventory (uses warehouse + item IDs) ---
+            try (PreparedStatement inventoryInsert = connection.prepareStatement(
+                    "INSERT INTO inventory (warehouse_id, item_id, quantity, minimum_stock) VALUES (?, ?, ?, ?)")) {
+
+                inventoryInsert.setInt(1, centralHubId);
+                inventoryInsert.setInt(2, waterPackId);
+                inventoryInsert.setInt(3, 120);
+                inventoryInsert.setInt(4, 40);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, centralHubId);
+                inventoryInsert.setInt(2, medicalKitId);
+                inventoryInsert.setInt(3, 45);
+                inventoryInsert.setInt(4, 15);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, coastalDepotId);
+                inventoryInsert.setInt(2, waterPackId);
+                inventoryInsert.setInt(3, 80);
+                inventoryInsert.setInt(4, 25);
+                inventoryInsert.executeUpdate();
+            }
+
+            // --- Emergency Requests (uses item IDs) ---
+            int redCrossRequestId;
+            try (PreparedStatement requestInsert = connection.prepareStatement(
+                    "INSERT INTO emergency_requests (organization, disaster_type, item_id, quantity, priority, status, request_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
+
+                requestInsert.setString(1, "Red Cross");
+                requestInsert.setString(2, "FLOOD");
+                requestInsert.setInt(3, waterPackId);
+                requestInsert.setInt(4, 30);
+                requestInsert.setString(5, "HIGH");
+                requestInsert.setString(6, "PENDING");
+                requestInsert.setString(7, "2026-08-01T09:30:00");
+                requestInsert.executeUpdate();
+                redCrossRequestId = getGeneratedId(requestInsert);
+
+                requestInsert.setString(1, "Aid Alliance");
+                requestInsert.setString(2, "EARTHQUAKE");
+                requestInsert.setInt(3, medicalKitId);
+                requestInsert.setInt(4, 10);
+                requestInsert.setString(5, "MEDIUM");
+                requestInsert.setString(6, "APPROVED");
+                requestInsert.setString(7, "2026-08-01T10:00:00");
+                requestInsert.executeUpdate();
+            }
+
+            // --- Dispatches (uses request + warehouse IDs) ---
+            try (PreparedStatement dispatchInsert = connection.prepareStatement(
+                    "INSERT INTO dispatches (request_id, warehouse_id, dispatch_date, status) VALUES (?, ?, ?, ?)")) {
+
+                dispatchInsert.setInt(1, redCrossRequestId);
+                dispatchInsert.setInt(2, centralHubId);
+                dispatchInsert.setString(3, "2026-08-01T11:15:00");
+                dispatchInsert.setString(4, "PENDING");
+                dispatchInsert.executeUpdate();
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(originalAutoCommit);
         }
+    }
 
-        try (PreparedStatement itemInsert = connection.prepareStatement("INSERT INTO relief_items (name, category, expiry_date) VALUES (?, ?, ?)")) {
-            itemInsert.setString(1, "Water Pack");
-            itemInsert.setString(2, "WATER");
-            itemInsert.setString(3, "2027-12-31");
-            itemInsert.executeUpdate();
-
-            itemInsert.setString(1, "Medical Kit");
-            itemInsert.setString(2, "MEDICINE");
-            itemInsert.setString(3, "2027-11-15");
-            itemInsert.executeUpdate();
+    private static int getGeneratedId(PreparedStatement statement) throws SQLException {
+        try (ResultSet keys = statement.getGeneratedKeys()) {
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
         }
-
-        try (PreparedStatement inventoryInsert = connection.prepareStatement("INSERT INTO inventory (warehouse_id, item_id, quantity, minimum_stock) VALUES (?, ?, ?, ?)")) {
-            inventoryInsert.setInt(1, 1);
-            inventoryInsert.setInt(2, 1);
-            inventoryInsert.setInt(3, 120);
-            inventoryInsert.setInt(4, 40);
-            inventoryInsert.executeUpdate();
-
-            inventoryInsert.setInt(1, 1);
-            inventoryInsert.setInt(2, 2);
-            inventoryInsert.setInt(3, 45);
-            inventoryInsert.setInt(4, 15);
-            inventoryInsert.executeUpdate();
-
-            inventoryInsert.setInt(1, 2);
-            inventoryInsert.setInt(2, 1);
-            inventoryInsert.setInt(3, 80);
-            inventoryInsert.setInt(4, 25);
-            inventoryInsert.executeUpdate();
-        }
-
-        try (PreparedStatement requestInsert = connection.prepareStatement("INSERT INTO emergency_requests (organization, disaster_type, item_id, quantity, priority, status, request_date) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-            requestInsert.setString(1, "Red Cross");
-            requestInsert.setString(2, "FLOOD");
-            requestInsert.setInt(3, 1);
-            requestInsert.setInt(4, 30);
-            requestInsert.setString(5, "HIGH");
-            requestInsert.setString(6, "PENDING");
-            requestInsert.setString(7, "2026-08-01T09:30:00");
-            requestInsert.executeUpdate();
-
-            requestInsert.setString(1, "Aid Alliance");
-            requestInsert.setString(2, "EARTHQUAKE");
-            requestInsert.setInt(3, 2);
-            requestInsert.setInt(4, 10);
-            requestInsert.setString(5, "MEDIUM");
-            requestInsert.setString(6, "APPROVED");
-            requestInsert.setString(7, "2026-08-01T10:00:00");
-            requestInsert.executeUpdate();
-        }
-
-        try (PreparedStatement dispatchInsert = connection.prepareStatement("INSERT INTO dispatches (request_id, warehouse_id, dispatch_date, status) VALUES (?, ?, ?, ?)")) {
-            dispatchInsert.setInt(1, 1);
-            dispatchInsert.setInt(2, 1);
-            dispatchInsert.setString(3, "2026-08-01T11:15:00");
-            dispatchInsert.setString(4, "PENDING");
-            dispatchInsert.executeUpdate();
-        }
+        throw new SQLException("Failed to retrieve generated key from INSERT.");
     }
 
     private static String hashPassword(String password) {
