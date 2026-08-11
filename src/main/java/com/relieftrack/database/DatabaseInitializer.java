@@ -103,6 +103,14 @@ public class DatabaseInitializer {
                     );
                     """);
 
+            // Prevent more than one active (PENDING or IN_TRANSIT) dispatch per request.
+            // Completed or cancelled dispatches are not constrained, allowing dispatch history.
+            statement.execute("""
+                    CREATE UNIQUE INDEX IF NOT EXISTS idx_dispatches_active_request
+                    ON dispatches(request_id)
+                    WHERE status IN ('PENDING', 'IN_TRANSIT');
+                    """);
+
             // Correct the legacy category value used by earlier demo databases.
             statement.executeUpdate("UPDATE relief_items SET category = 'MEDICINE' WHERE category = 'MEDICAL'");
 
