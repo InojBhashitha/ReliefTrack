@@ -29,7 +29,8 @@ public class ReliefItemService {
         List<ReliefItem> items = reliefItemRepository.findAll();
         for (ReliefItem item : items) {
             if (item.getName() != null) {
-                itemByNameTree.put(item.getName().toLowerCase(), item);
+                String key = item.getName().toLowerCase() + "#" + item.getItemId();
+                itemByNameTree.put(key, item);
             }
         }
         isInitialized = true;
@@ -57,7 +58,9 @@ public class ReliefItemService {
         if (!isInitialized) {
             syncFromDatabase();
         }
-        return itemByNameTree.get(name.toLowerCase());
+        String prefix = name.toLowerCase() + "#";
+        List<ReliefItem> matches = itemByNameTree.rangeSearch(prefix, prefix + "\uffff");
+        return matches.isEmpty() ? Optional.empty() : Optional.of(matches.get(0));
     }
 
     public AVLTree<String, ReliefItem> getItemByNameTree() {
