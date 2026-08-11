@@ -25,6 +25,8 @@ class InventoryServiceTest {
         // Clear seeded demo data for clean test execution
         try (java.sql.Connection conn = com.relieftrack.database.DatabaseManager.getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM dispatches");
+            stmt.execute("DELETE FROM emergency_requests");
             stmt.execute("DELETE FROM inventory");
             stmt.execute("DELETE FROM relief_items");
             stmt.execute("DELETE FROM warehouses");
