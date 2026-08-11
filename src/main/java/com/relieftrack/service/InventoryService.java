@@ -22,12 +22,22 @@ public class InventoryService {
         this.inventoryRepository = new InventoryRepository();
         this.inventoryByIdTree = new AVLTree<>();
         this.inventoryByNameTree = new AVLTree<>();
+        try {
+            syncFromDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public InventoryService(InventoryRepository repository) {
         this.inventoryRepository = repository;
         this.inventoryByIdTree = new AVLTree<>();
         this.inventoryByNameTree = new AVLTree<>();
+        try {
+            syncFromDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Ensures the in-memory AVL Trees are synchronized with the database. */
@@ -125,5 +135,12 @@ public class InventoryService {
 
     public AVLTree<String, Inventory> getInventoryByNameTree() {
         return inventoryByNameTree;
+    }
+
+    public List<Inventory> search(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return inventoryByNameTree.valuesInOrder();
+        }
+        return inventoryByNameTree.searchPrefix(query.toLowerCase().trim());
     }
 }

@@ -17,6 +17,7 @@ public class HashTable<K, V> {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
+    @SuppressWarnings("unchecked")
     public HashTable(int initialCapacity, double loadFactor) {
         if (initialCapacity <= 0) {
             throw new IllegalArgumentException("Initial capacity must be greater than 0.");

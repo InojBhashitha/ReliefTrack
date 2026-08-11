@@ -10,15 +10,15 @@
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.relieftrack.controller.LoginController"
-           stylesheets="@../css/style.css">
+           stylesheets="@../css/style.css"
+           styleClass="login-root">
 
-    <VBox alignment="CENTER" maxWidth="420" spacing="14" styleClass="login-card">
+    <VBox alignment="CENTER" maxWidth="380" maxHeight="440" spacing="18" styleClass="login-card">
         <padding>
-            <Insets top="24" right="24" bottom="24" left="24"/>
+            <Insets top="36" right="32" bottom="36" left="32"/>
         </padding>
 
         <Label text="ReliefTrack" styleClass="app-title"/>
-        <Label text="Secure disaster operations login" styleClass="subtitle-text"/>
 
         <VBox spacing="10" maxWidth="Infinity">
             <Label text="Username" styleClass="card-label"/>
@@ -28,7 +28,7 @@
             <PasswordField fx:id="passwordField" promptText="Enter password"/>
         </VBox>
 
-        <Button text="Login" onAction="#handleLogin" maxWidth="Infinity" styleClass="quick-action"/>
+        <Button text="Login" onAction="#handleLogin" maxWidth="Infinity" styleClass="login-button-primary"/>
         <Label fx:id="statusLabel" text="" styleClass="status-text" wrapText="true"/>
     </VBox>
 

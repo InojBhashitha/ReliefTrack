@@ -1,7 +1,10 @@
 package com.relieftrack.controller;
 
+import java.io.IOException;
+
 import com.relieftrack.config.AppConfig;
 import com.relieftrack.config.SessionManager;
+import com.relieftrack.service.AuthenticationService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,8 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class DashboardController {
 
@@ -116,6 +117,7 @@ public class DashboardController {
 
     @FXML
     private void logout() {
+        AuthenticationService.clearSession();
         SessionManager.logout();
         redirectToLogin();
     }

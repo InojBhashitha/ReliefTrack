@@ -51,11 +51,6 @@ public class Warehouse {
 
     @Override
     public String toString() {
-        return "Warehouse{" +
-                "warehouseId=" + warehouseId +
-                ", name='" + name + '\'' +
-                ", district='" + district + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return name + " | " + district + " (" + address + ")";
     }
 }

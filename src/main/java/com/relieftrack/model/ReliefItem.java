@@ -55,11 +55,6 @@ public class ReliefItem {
 
     @Override
     public String toString() {
-        return "ReliefItem{" +
-                "itemId=" + itemId +
-                ", name='" + name + '\'' +
-                ", category=" + category +
-                ", expiryDate=" + expiryDate +
-                '}';
+        return name + " (" + category + ") | Exp: " + expiryDate;
     }
 }
