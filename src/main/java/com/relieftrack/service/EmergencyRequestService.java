@@ -79,4 +79,20 @@ public class EmergencyRequestService {
         }
         return ordered;
     }
+
+    /** Returns pending or approved requests in priority order for scheduling dispatches. */
+    public List<EmergencyRequest> prioritizeSchedulableRequests(List<EmergencyRequest> requests) {
+        PriorityQueue queue = new PriorityQueue();
+        List<EmergencyRequest> ordered = new ArrayList<>();
+        for (EmergencyRequest request : requests) {
+            if (request.getStatus() == com.relieftrack.enums.RequestStatus.PENDING ||
+                request.getStatus() == com.relieftrack.enums.RequestStatus.APPROVED) {
+                queue.enqueue(request);
+            }
+        }
+        while (!queue.isEmpty()) {
+            ordered.add(queue.dequeue());
+        }
+        return ordered;
+    }
 }

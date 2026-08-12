@@ -261,6 +261,15 @@ public class DatabaseInitializer {
                 dispatchInsert.executeUpdate();
             }
 
+            // --- Warehouse Connections (uses warehouse IDs) ---
+            try (PreparedStatement connectionInsert = connection.prepareStatement(
+                    "INSERT INTO warehouse_connections (source_warehouse, destination_warehouse, distance) VALUES (?, ?, ?)")) {
+                connectionInsert.setInt(1, centralHubId);
+                connectionInsert.setInt(2, coastalDepotId);
+                connectionInsert.setDouble(3, 45.2);
+                connectionInsert.executeUpdate();
+            }
+
             connection.commit();
         } catch (SQLException e) {
             connection.rollback();
