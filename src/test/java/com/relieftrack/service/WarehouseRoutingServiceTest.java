@@ -33,9 +33,9 @@ class WarehouseRoutingServiceTest {
     @Test
     void buildGraphSucceedsAndCalculatesRoute() throws SQLException {
         // Warehouse connections are seeded in demo data by our database initializer:
-        // Central Hub (1) <-> Coastal Depot (2) distance 45.2
+        // Colombo Central Hub (1) <-> Galle Coastal Depot (2) distance 119.5
         List<Warehouse> warehouses = warehouseService.findAll();
-        assertEquals(2, warehouses.size());
+        assertEquals(4, warehouses.size());
 
         Warehouse hub = warehouses.get(0);
         Warehouse depot = warehouses.get(1);
@@ -88,7 +88,7 @@ class WarehouseRoutingServiceTest {
         assertDoesNotThrow(() -> {
             Graph graph = routingService.buildWarehouseGraph();
             assertNotNull(graph);
-            assertEquals(2, graph.getVertices().size());
+            assertEquals(4, graph.getVertices().size());
         });
 
         // The shortest route calculation should still work

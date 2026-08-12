@@ -88,11 +88,11 @@ class DatabaseInitializerTest {
             try (Connection conn = DatabaseManager.getConnection();
                  Statement stmt = conn.createStatement()) {
 
-                assertCount(stmt, "warehouses", 2);
-                assertCount(stmt, "relief_items", 2);
-                assertCount(stmt, "inventory", 3);
-                assertCount(stmt, "emergency_requests", 2);
-                assertCount(stmt, "dispatches", 1);
+                assertCount(stmt, "warehouses", 4);
+                assertCount(stmt, "relief_items", 4);
+                assertCount(stmt, "inventory", 11);
+                assertCount(stmt, "emergency_requests", 3);
+                assertCount(stmt, "dispatches", 2);
             }
         } finally {
             System.clearProperty("relieftrack.database.url");
@@ -112,11 +112,11 @@ class DatabaseInitializerTest {
             try (Connection conn = DatabaseManager.getConnection();
                  Statement stmt = conn.createStatement()) {
 
-                assertCount(stmt, "warehouses", 2);
-                assertCount(stmt, "relief_items", 2);
-                assertCount(stmt, "inventory", 3);
-                assertCount(stmt, "emergency_requests", 2);
-                assertCount(stmt, "dispatches", 1);
+                assertCount(stmt, "warehouses", 4);
+                assertCount(stmt, "relief_items", 4);
+                assertCount(stmt, "inventory", 11);
+                assertCount(stmt, "emergency_requests", 3);
+                assertCount(stmt, "dispatches", 2);
                 assertCount(stmt, "users", 1);
             }
         } finally {
