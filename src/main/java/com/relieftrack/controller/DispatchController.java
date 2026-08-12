@@ -58,11 +58,11 @@ public class DispatchController {
 
             // Load requests using Priority Queue (highest priority first)
                             
-            List<EmergencyRequest> pendingRequests =
-                    emergencyRequestService.prioritizePendingRequests(
+            List<EmergencyRequest> schedulableRequests =
+                    emergencyRequestService.prioritizeSchedulableRequests(
                             emergencyRequestService.findAll());
 
-            requestChoice.getItems().setAll(pendingRequests);
+            requestChoice.getItems().setAll(schedulableRequests);
                     
 
             warehouseChoice.getItems().setAll(warehouseService.findAll());
@@ -70,8 +70,8 @@ public class DispatchController {
             summaryLabel.setText(
                     "Dispatch records loaded: "
                             + dispatches.size()
-                            + " | Pending requests: "
-                            + pendingRequests.size());
+                            + " | Pending/Approved requests: "
+                            + schedulableRequests.size());
 
         } catch (SQLException e) {
             summaryLabel.setText("Unable to load dispatch data.");

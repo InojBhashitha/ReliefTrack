@@ -1,6 +1,7 @@
 package com.relieftrack.service;
 
 import com.relieftrack.database.DatabaseManager;
+import com.relieftrack.datastructure.graph.Edge;
 import com.relieftrack.datastructure.graph.Graph;
 import com.relieftrack.datastructure.graph.Vertex;
 import com.relieftrack.model.Warehouse;
@@ -32,7 +33,9 @@ public class WarehouseRoutingService {
                     Vertex source = findVertex(graph, resultSet.getInt("source_warehouse"));
                     Vertex destination = findVertex(graph, resultSet.getInt("destination_warehouse"));
                     if (source != null && destination != null) {
-                        graph.addUndirectedEdge(source, destination, resultSet.getDouble("distance"));
+                        if (!hasEdge(graph, source, destination)) {
+                            graph.addUndirectedEdge(source, destination, resultSet.getDouble("distance"));
+                        }
                     }
                 }
             }
@@ -83,5 +86,14 @@ public class WarehouseRoutingService {
             }
         }
         return null;
+    }
+
+    private boolean hasEdge(Graph graph, Vertex source, Vertex destination) {
+        for (Edge edge : graph.getEdges(source)) {
+            if (edge.getDestination().equals(destination)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

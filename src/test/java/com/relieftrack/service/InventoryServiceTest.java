@@ -28,6 +28,7 @@ class InventoryServiceTest {
             stmt.execute("DELETE FROM dispatches");
             stmt.execute("DELETE FROM emergency_requests");
             stmt.execute("DELETE FROM inventory");
+            stmt.execute("DELETE FROM warehouse_connections");
             stmt.execute("DELETE FROM relief_items");
             stmt.execute("DELETE FROM warehouses");
         }
@@ -89,6 +90,7 @@ class InventoryServiceTest {
             stmt.execute("DELETE FROM dispatches");
             stmt.execute("DELETE FROM emergency_requests");
             stmt.execute("DELETE FROM inventory");
+            stmt.execute("DELETE FROM warehouse_connections");
             stmt.execute("DELETE FROM relief_items");
             stmt.execute("DELETE FROM warehouses");
         }

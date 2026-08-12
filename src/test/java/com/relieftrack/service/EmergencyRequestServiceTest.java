@@ -26,6 +26,20 @@ class EmergencyRequestServiceTest {
     }
 
     @Test
+    void prioritizesSchedulableRequestsPendingAndApproved() {
+        EmergencyRequestService service = new EmergencyRequestService();
+
+        List<EmergencyRequest> prioritized = service.prioritizeSchedulableRequests(List.of(
+                request(1, PriorityLevel.LOW, RequestStatus.PENDING),
+                request(2, PriorityLevel.CRITICAL, RequestStatus.PENDING),
+                request(3, PriorityLevel.HIGH, RequestStatus.APPROVED),
+                request(4, PriorityLevel.MEDIUM, RequestStatus.COMPLETED)
+        ));
+
+        assertEquals(List.of(2, 3, 1), prioritized.stream().map(EmergencyRequest::getRequestId).toList());
+    }
+
+    @Test
     void saveNullRequestThrowsException() {
         EmergencyRequestService service = new EmergencyRequestService();
         assertThrows(IllegalArgumentException.class, () -> service.save(null));
