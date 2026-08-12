@@ -3,17 +3,21 @@ package com.relieftrack.controller;
 import com.relieftrack.enums.RequestStatus;
 import com.relieftrack.model.EmergencyRequest;
 import com.relieftrack.model.Inventory;
+import com.relieftrack.model.Warehouse;
 import com.relieftrack.service.EmergencyRequestService;
 import com.relieftrack.service.InventoryService;
 import com.relieftrack.service.ReportService;
+import com.relieftrack.service.WarehouseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -23,6 +27,7 @@ public class HomeController {
     private final ReportService reportService = new ReportService();
     private final EmergencyRequestService emergencyRequestService = new EmergencyRequestService();
     private final InventoryService inventoryService = new InventoryService();
+    private final WarehouseService warehouseService = new WarehouseService();
 
     @FXML
     private Label pageTitle;
@@ -56,6 +61,9 @@ public class HomeController {
 
     @FXML
     private ListView<String> alertsList;
+
+    @FXML
+    private VBox warehouseStatusContainer;
 
     @FXML
     public void initialize() {
@@ -99,14 +107,66 @@ public class HomeController {
 
             alerts.add("Dispatches recorded: " + summary.getDispatchCount());
             alertsList.setItems(alerts);
+
+            // Dynamically load warehouse progress status
+            if (warehouseStatusContainer != null) {
+                warehouseStatusContainer.getChildren().clear();
+                List<Warehouse> warehouses = warehouseService.findAll();
+                List<Inventory> allInventory = inventoryService.findAll();
+
+                for (Warehouse warehouse : warehouses) {
+                    int totalStock = 0;
+                    for (Inventory inv : allInventory) {
+                        if (inv.getWarehouse() != null && inv.getWarehouse().getWarehouseId() == warehouse.getWarehouseId()) {
+                            totalStock += inv.getQuantity();
+                        }
+                    }
+
+                    VBox itemBox = new VBox(6);
+                    double progress = Math.min(1.0, totalStock / 200.0);
+                    Label nameLabel = new Label(warehouse.getName() + " (" + totalStock + " items)");
+                    nameLabel.getStyleClass().add("mini-label");
+
+                    ProgressBar progressBar = new ProgressBar(progress);
+                    progressBar.setMaxWidth(Double.MAX_VALUE);
+
+                    itemBox.getChildren().addAll(nameLabel, progressBar);
+                    warehouseStatusContainer.getChildren().add(itemBox);
+                }
+            }
+
         } catch (SQLException e) {
-            inventoryCountLabel.setText("-" );
+            inventoryCountLabel.setText("-");
             openRequestCountLabel.setText("-");
             warehouseCountLabel.setText("-");
             dispatchRateLabel.setText("-");
             requestTable.setItems(FXCollections.emptyObservableList());
             alertsList.setItems(FXCollections.observableArrayList("Unable to load dashboard data."));
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleQuickInventory() {
+        DashboardController dashboard = DashboardController.getInstance();
+        if (dashboard != null) {
+            dashboard.showInventory();
+        }
+    }
+
+    @FXML
+    private void handleQuickDispatches() {
+        DashboardController dashboard = DashboardController.getInstance();
+        if (dashboard != null) {
+            dashboard.showDispatch();
+        }
+    }
+
+    @FXML
+    private void handleQuickReports() {
+        DashboardController dashboard = DashboardController.getInstance();
+        if (dashboard != null) {
+            dashboard.showReports();
         }
     }
 
