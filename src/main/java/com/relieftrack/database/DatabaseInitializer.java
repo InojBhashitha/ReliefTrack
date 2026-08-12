@@ -162,28 +162,44 @@ public class DatabaseInitializer {
         connection.setAutoCommit(false);
         try {
             // --- Warehouses ---
-            int centralHubId;
-            int coastalDepotId;
+            int colomboHubId;
+            int galleDepotId;
+            int kandyStationId;
+            int anuradhapuraDepotId;
             try (PreparedStatement warehouseInsert = connection.prepareStatement(
                     "INSERT INTO warehouses (name, district, address) VALUES (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
 
-                warehouseInsert.setString(1, "Central Hub");
-                warehouseInsert.setString(2, "North District");
-                warehouseInsert.setString(3, "12 Relief Avenue");
+                warehouseInsert.setString(1, "Colombo Central Hub");
+                warehouseInsert.setString(2, "Colombo");
+                warehouseInsert.setString(3, "100 D.R. Wijewardena Mawatha, Colombo 10");
                 warehouseInsert.executeUpdate();
-                centralHubId = getGeneratedId(warehouseInsert);
+                colomboHubId = getGeneratedId(warehouseInsert);
 
-                warehouseInsert.setString(1, "Coastal Depot");
-                warehouseInsert.setString(2, "Coastal Zone");
-                warehouseInsert.setString(3, "8 Harbor Road");
+                warehouseInsert.setString(1, "Galle Coastal Depot");
+                warehouseInsert.setString(2, "Galle");
+                warehouseInsert.setString(3, "12 Wackwella Road, Galle");
                 warehouseInsert.executeUpdate();
-                coastalDepotId = getGeneratedId(warehouseInsert);
+                galleDepotId = getGeneratedId(warehouseInsert);
+
+                warehouseInsert.setString(1, "Kandy Hill Country Station");
+                warehouseInsert.setString(2, "Kandy");
+                warehouseInsert.setString(3, "45 Peradeniya Road, Kandy");
+                warehouseInsert.executeUpdate();
+                kandyStationId = getGeneratedId(warehouseInsert);
+
+                warehouseInsert.setString(1, "Anuradhapura Dry Zone Depot");
+                warehouseInsert.setString(2, "Anuradhapura");
+                warehouseInsert.setString(3, "88 Maitripala Senanayake Mawatha, Anuradhapura");
+                warehouseInsert.executeUpdate();
+                anuradhapuraDepotId = getGeneratedId(warehouseInsert);
             }
 
             // --- Relief Items ---
             int waterPackId;
             int medicalKitId;
+            int rationsPackId;
+            int tentId;
             try (PreparedStatement itemInsert = connection.prepareStatement(
                     "INSERT INTO relief_items (name, category, expiry_date) VALUES (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -199,74 +215,176 @@ public class DatabaseInitializer {
                 itemInsert.setString(3, "2027-11-15");
                 itemInsert.executeUpdate();
                 medicalKitId = getGeneratedId(itemInsert);
+
+                itemInsert.setString(1, "Dry Rations Pack");
+                itemInsert.setString(2, "FOOD");
+                itemInsert.setString(3, "2027-06-30");
+                itemInsert.executeUpdate();
+                rationsPackId = getGeneratedId(itemInsert);
+
+                itemInsert.setString(1, "Emergency Tent");
+                itemInsert.setString(2, "SHELTER");
+                itemInsert.setString(3, "2029-12-31");
+                itemInsert.executeUpdate();
+                tentId = getGeneratedId(itemInsert);
             }
 
             // --- Inventory (uses warehouse + item IDs) ---
             try (PreparedStatement inventoryInsert = connection.prepareStatement(
                     "INSERT INTO inventory (warehouse_id, item_id, quantity, minimum_stock) VALUES (?, ?, ?, ?)")) {
 
-                inventoryInsert.setInt(1, centralHubId);
+                // Colombo Central Hub Inventory
+                inventoryInsert.setInt(1, colomboHubId);
                 inventoryInsert.setInt(2, waterPackId);
-                inventoryInsert.setInt(3, 120);
+                inventoryInsert.setInt(3, 500);
+                inventoryInsert.setInt(4, 100);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, colomboHubId);
+                inventoryInsert.setInt(2, medicalKitId);
+                inventoryInsert.setInt(3, 150);
+                inventoryInsert.setInt(4, 30);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, colomboHubId);
+                inventoryInsert.setInt(2, rationsPackId);
+                inventoryInsert.setInt(3, 300);
+                inventoryInsert.setInt(4, 50);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, colomboHubId);
+                inventoryInsert.setInt(2, tentId);
+                inventoryInsert.setInt(3, 80);
+                inventoryInsert.setInt(4, 20);
+                inventoryInsert.executeUpdate();
+
+                // Galle Coastal Depot Inventory
+                inventoryInsert.setInt(1, galleDepotId);
+                inventoryInsert.setInt(2, waterPackId);
+                inventoryInsert.setInt(3, 200);
+                inventoryInsert.setInt(4, 50);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, galleDepotId);
+                inventoryInsert.setInt(2, rationsPackId);
+                inventoryInsert.setInt(3, 150);
+                inventoryInsert.setInt(4, 30);
+                inventoryInsert.executeUpdate();
+
+                // Kandy Hill Country Station Inventory
+                inventoryInsert.setInt(1, kandyStationId);
+                inventoryInsert.setInt(2, waterPackId);
+                inventoryInsert.setInt(3, 150);
                 inventoryInsert.setInt(4, 40);
                 inventoryInsert.executeUpdate();
 
-                inventoryInsert.setInt(1, centralHubId);
+                inventoryInsert.setInt(1, kandyStationId);
                 inventoryInsert.setInt(2, medicalKitId);
-                inventoryInsert.setInt(3, 45);
-                inventoryInsert.setInt(4, 15);
+                inventoryInsert.setInt(3, 60);
+                inventoryInsert.setInt(4, 20);
                 inventoryInsert.executeUpdate();
 
-                inventoryInsert.setInt(1, coastalDepotId);
+                inventoryInsert.setInt(1, kandyStationId);
+                inventoryInsert.setInt(2, rationsPackId);
+                inventoryInsert.setInt(3, 120);
+                inventoryInsert.setInt(4, 30);
+                inventoryInsert.executeUpdate();
+
+                // Anuradhapura Dry Zone Depot Inventory
+                inventoryInsert.setInt(1, anuradhapuraDepotId);
                 inventoryInsert.setInt(2, waterPackId);
+                inventoryInsert.setInt(3, 100);
+                inventoryInsert.setInt(4, 30);
+                inventoryInsert.executeUpdate();
+
+                inventoryInsert.setInt(1, anuradhapuraDepotId);
+                inventoryInsert.setInt(2, rationsPackId);
                 inventoryInsert.setInt(3, 80);
-                inventoryInsert.setInt(4, 25);
+                inventoryInsert.setInt(4, 20);
                 inventoryInsert.executeUpdate();
             }
 
             // --- Emergency Requests (uses item IDs) ---
-            int redCrossRequestId;
+            int sarvodayaFloodId;
+            int redCrossLandslideId;
+            int dmcDroughtId;
             try (PreparedStatement requestInsert = connection.prepareStatement(
                     "INSERT INTO emergency_requests (organization, disaster_type, item_id, quantity, priority, status, request_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
 
-                requestInsert.setString(1, "Red Cross");
+                requestInsert.setString(1, "Sarvodaya");
                 requestInsert.setString(2, "FLOOD");
                 requestInsert.setInt(3, waterPackId);
-                requestInsert.setInt(4, 30);
-                requestInsert.setString(5, "HIGH");
+                requestInsert.setInt(4, 150);
+                requestInsert.setString(5, "CRITICAL");
                 requestInsert.setString(6, "PENDING");
-                requestInsert.setString(7, "2026-08-01T09:30:00");
+                requestInsert.setString(7, "2026-08-10T08:30:00");
                 requestInsert.executeUpdate();
-                redCrossRequestId = getGeneratedId(requestInsert);
+                sarvodayaFloodId = getGeneratedId(requestInsert);
 
-                requestInsert.setString(1, "Aid Alliance");
-                requestInsert.setString(2, "EARTHQUAKE");
+                requestInsert.setString(1, "SL Red Cross");
+                requestInsert.setString(2, "LANDSLIDE");
                 requestInsert.setInt(3, medicalKitId);
-                requestInsert.setInt(4, 10);
+                requestInsert.setInt(4, 25);
+                requestInsert.setString(5, "HIGH");
+                requestInsert.setString(6, "DISPATCHED");
+                requestInsert.setString(7, "2026-08-11T09:15:00");
+                requestInsert.executeUpdate();
+                redCrossLandslideId = getGeneratedId(requestInsert);
+
+                requestInsert.setString(1, "DMC Sri Lanka");
+                requestInsert.setString(2, "DROUGHT");
+                requestInsert.setInt(3, rationsPackId);
+                requestInsert.setInt(4, 50);
                 requestInsert.setString(5, "MEDIUM");
                 requestInsert.setString(6, "APPROVED");
-                requestInsert.setString(7, "2026-08-01T10:00:00");
+                requestInsert.setString(7, "2026-08-12T10:00:00");
                 requestInsert.executeUpdate();
+                dmcDroughtId = getGeneratedId(requestInsert);
             }
 
             // --- Dispatches (uses request + warehouse IDs) ---
             try (PreparedStatement dispatchInsert = connection.prepareStatement(
                     "INSERT INTO dispatches (request_id, warehouse_id, dispatch_date, status) VALUES (?, ?, ?, ?)")) {
 
-                dispatchInsert.setInt(1, redCrossRequestId);
-                dispatchInsert.setInt(2, centralHubId);
-                dispatchInsert.setString(3, "2026-08-01T11:15:00");
+                dispatchInsert.setInt(1, sarvodayaFloodId);
+                dispatchInsert.setInt(2, colomboHubId);
+                dispatchInsert.setString(3, "2026-08-12T11:00:00");
                 dispatchInsert.setString(4, "PENDING");
+                dispatchInsert.executeUpdate();
+
+                dispatchInsert.setInt(1, redCrossLandslideId);
+                dispatchInsert.setInt(2, kandyStationId);
+                dispatchInsert.setString(3, "2026-08-11T12:00:00");
+                dispatchInsert.setString(4, "SHIPPED");
                 dispatchInsert.executeUpdate();
             }
 
             // --- Warehouse Connections (uses warehouse IDs) ---
             try (PreparedStatement connectionInsert = connection.prepareStatement(
                     "INSERT INTO warehouse_connections (source_warehouse, destination_warehouse, distance) VALUES (?, ?, ?)")) {
-                connectionInsert.setInt(1, centralHubId);
-                connectionInsert.setInt(2, coastalDepotId);
-                connectionInsert.setDouble(3, 45.2);
+                // Colombo <-> Galle
+                connectionInsert.setInt(1, colomboHubId);
+                connectionInsert.setInt(2, galleDepotId);
+                connectionInsert.setDouble(3, 119.5);
+                connectionInsert.executeUpdate();
+
+                // Colombo <-> Kandy
+                connectionInsert.setInt(1, colomboHubId);
+                connectionInsert.setInt(2, kandyStationId);
+                connectionInsert.setDouble(3, 115.2);
+                connectionInsert.executeUpdate();
+
+                // Kandy <-> Anuradhapura
+                connectionInsert.setInt(1, kandyStationId);
+                connectionInsert.setInt(2, anuradhapuraDepotId);
+                connectionInsert.setDouble(3, 136.0);
+                connectionInsert.executeUpdate();
+
+                // Colombo <-> Anuradhapura
+                connectionInsert.setInt(1, colomboHubId);
+                connectionInsert.setInt(2, anuradhapuraDepotId);
+                connectionInsert.setDouble(3, 201.8);
                 connectionInsert.executeUpdate();
             }
 

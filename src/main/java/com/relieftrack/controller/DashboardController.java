@@ -17,6 +17,12 @@ import javafx.stage.Stage;
 
 public class DashboardController {
 
+    private static DashboardController instance;
+
+    public static DashboardController getInstance() {
+        return instance;
+    }
+
     @FXML
     private StackPane contentPane;
 
@@ -46,6 +52,7 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        instance = this;
         if (!SessionManager.isLoggedIn()) {
             redirectToLogin();
             return;
@@ -57,6 +64,7 @@ public class DashboardController {
 
         configureNavigation();
         loadPage("/fxml/home.fxml");
+        updateActiveButton(dashboardButton);
     }
 
     private void configureNavigation() {
@@ -76,43 +84,68 @@ public class DashboardController {
         }
     }
 
+    private void updateActiveButton(Button activeButton) {
+        java.util.List<Button> buttons = java.util.List.of(
+                dashboardButton, inventoryButton, warehousesButton,
+                requestsButton, dispatchButton, reportsButton, usersButton
+        );
+        for (Button button : buttons) {
+            if (button != null) {
+                button.getStyleClass().remove("nav-button-active");
+                if (!button.getStyleClass().contains("nav-button")) {
+                    button.getStyleClass().add("nav-button");
+                }
+            }
+        }
+        if (activeButton != null) {
+            activeButton.getStyleClass().add("nav-button-active");
+        }
+    }
+
     @FXML
-    private void showDashboard() {
+    public void showDashboard() {
         loadPage("/fxml/home.fxml");
+        updateActiveButton(dashboardButton);
     }
 
     @FXML
-    private void showInventory() {
+    public void showInventory() {
         loadPage("/fxml/inventory.fxml");
+        updateActiveButton(inventoryButton);
     }
 
     @FXML
-    private void showWarehouses() {
+    public void showWarehouses() {
         loadPage("/fxml/warehouse.fxml");
+        updateActiveButton(warehousesButton);
     }
 
     @FXML
-    private void showRequests() {
+    public void showRequests() {
         loadPage("/fxml/request.fxml");
+        updateActiveButton(requestsButton);
     }
 
     @FXML
-    private void showDispatch() {
+    public void showDispatch() {
         loadPage("/fxml/dispatch.fxml");
+        updateActiveButton(dispatchButton);
     }
 
     @FXML
-    private void showReports() {
+    public void showReports() {
         loadPage("/fxml/report.fxml");
+        updateActiveButton(reportsButton);
     }
 
     @FXML
-    private void showUsers() {
+    public void showUsers() {
         if (!SessionManager.isAdmin()) {
             showAccessDenied();
             return;
         }
         loadPage("/fxml/user.fxml");
+        updateActiveButton(usersButton);
     }
 
     @FXML

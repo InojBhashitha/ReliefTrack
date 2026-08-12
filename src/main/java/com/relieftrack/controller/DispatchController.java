@@ -43,6 +43,19 @@ public class DispatchController {
     public void initialize() {
         statusChoice.getItems().setAll(DispatchStatus.values());
         statusChoice.setValue(DispatchStatus.PENDING);
+        dispatchList.getSelectionModel().selectedItemProperty().addListener((observable, previous, selected) -> {
+            if (selected != null) {
+                try {
+                    int id = extractDispatchId(selected);
+                    Dispatch dispatch = dispatchService.findById(id);
+                    if (dispatch != null) {
+                        statusChoice.setValue(dispatch.getStatus());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         loadDispatches();
     }
 

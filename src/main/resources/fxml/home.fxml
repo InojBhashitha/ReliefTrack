@@ -80,40 +80,17 @@
         <VBox styleClass="panel" spacing="14" GridPane.columnIndex="0" GridPane.rowIndex="1">
             <Label text="Warehouse Status" styleClass="section-title"/>
 
-            <GridPane hgap="12" vgap="12">
-                <columnConstraints>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="6">
-                    <Label text="Central Hub" styleClass="mini-label"/>
-                    <ProgressBar progress="0.84" maxWidth="Infinity"/>
-                </VBox>
-
-                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="6">
-                    <Label text="North Depot" styleClass="mini-label"/>
-                    <ProgressBar progress="0.63" maxWidth="Infinity"/>
-                </VBox>
-
-                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="6">
-                    <Label text="Coastal Warehouse" styleClass="mini-label"/>
-                    <ProgressBar progress="0.72" maxWidth="Infinity"/>
-                </VBox>
-
-                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="6">
-                    <Label text="Eastern Station" styleClass="mini-label"/>
-                    <ProgressBar progress="0.51" maxWidth="Infinity"/>
-                </VBox>
-            </GridPane>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" prefHeight="130">
+                <VBox fx:id="warehouseStatusContainer" spacing="10"/>
+            </ScrollPane>
         </VBox>
 
         <VBox styleClass="panel" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <Label text="Quick Actions" styleClass="section-title"/>
 
-            <Button text="Create Inventory Update" maxWidth="Infinity" styleClass="quick-action"/>
-            <Button text="Review Pending Dispatches" maxWidth="Infinity" styleClass="quick-action"/>
-            <Button text="Generate Weekly Report" maxWidth="Infinity" styleClass="quick-action"/>
+            <Button text="Create Inventory Update" onAction="#handleQuickInventory" maxWidth="Infinity" styleClass="quick-action"/>
+            <Button text="Review Pending Dispatches" onAction="#handleQuickDispatches" maxWidth="Infinity" styleClass="quick-action"/>
+            <Button text="Generate Weekly Report" onAction="#handleQuickReports" maxWidth="Infinity" styleClass="quick-action"/>
         </VBox>
 
     </GridPane>
